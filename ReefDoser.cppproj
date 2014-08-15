@@ -82,7 +82,7 @@
             <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries</Value>
             <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
-            <Value>D:\Private\SkyDrive\Projekty\libraries</Value>
+            <Value>D:\Private\Projekty\libraries</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
@@ -130,7 +130,7 @@
             <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries</Value>
             <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
-            <Value>D:\Private\SkyDrive\Projekty\libraries</Value>
+            <Value>D:\Private\Projekty\libraries</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
@@ -340,7 +340,7 @@ vm.runtime.compiler.showwarnings=false
             <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries</Value>
             <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
-            <Value>D:\Private\SkyDrive\Projekty\libraries</Value>
+            <Value>D:\Private\Projekty\libraries</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
@@ -388,7 +388,7 @@ vm.runtime.compiler.showwarnings=false
             <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries</Value>
             <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
-            <Value>D:\Private\SkyDrive\Projekty\libraries</Value>
+            <Value>D:\Private\Projekty\libraries</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
             <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>

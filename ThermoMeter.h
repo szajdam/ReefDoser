@@ -13,7 +13,7 @@
 #include <DallasTemperature.h>
 
 
-#define ONE_WIRE_BUS				2
+#define ONE_WIRE_BUS				19
 #define TEMP_UPDATE_FREQUENCY		60*1000 //A MINUTE
 
 class ThermoMeter

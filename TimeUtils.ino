@@ -73,7 +73,7 @@ void setRTCTimeFromFile() {
 }
 
 String getCurrentTimeStr() {
-	timeToString(currentTime);
+	return timeToString(currentTime);
 }
 
 String timeToString(tmElements_t time) {
@@ -88,7 +88,7 @@ String timeToString(tmElements_t time) {
 
 
 String getCurrentDateStr() {
-	dateToString(currentTime);
+	return dateToString(currentTime);
 }
 String dateToString(tmElements_t date) {
 		String dateStr = to2Digits(String((int) tmYearToCalendar(currentTime.Year)));

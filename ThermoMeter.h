@@ -14,7 +14,7 @@
 
 
 #define ONE_WIRE_BUS				19
-#define TEMP_UPDATE_FREQUENCY		60*1000 //A MINUTE
+#define TEMP_UPDATE_FREQUENCY		(long)60*1000 //A MINUTE
 
 class ThermoMeter
 {

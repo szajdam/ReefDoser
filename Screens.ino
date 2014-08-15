@@ -176,7 +176,7 @@ void drawPump(int x1, int y1, int x2, int y2, String label) {
 void drawPumpWStatus(int x1, int y1, int x2, int y2, String label, tmElements_t nextDoseTime, int remainingDose) {
 	lcd.setFont(SmallFont);
 	drawPump(x1, y1, x2, y2, label);
-	int radius = x2-x1/2;
+	//int radius = x2-x1/2;
 	//int y = y1 + radius;
 	int x_label = x2 + 5;
 	int y_label1 = y1 + (lcd.getFontYsize()/2);
@@ -239,9 +239,9 @@ void drawMainScreen(float temp, String time, String date) {
 	currentMenu = MAIN_SCREEN;
 	
 	drawBar(temp, time, date);
-	drawPumpWStatus(10, 40, 40, 70, pumpA.getLabel(), pumpA.getNextDosingDate(), pumpA.getRemainingDose());
-	drawPumpWStatus(10, 90, 40, 120, pumpB.getLabel(), pumpB.getNextDosingDate(), pumpB.getRemainingDose());
-	drawPumpWStatus(10, 140, 40, 170, pumpC.getLabel(), pumpC.getNextDosingDate(), pumpC.getRemainingDose());
+	drawPumpWStatus(5, 35, 40, 70, pumpA.getLabel(), pumpA.getNextDosingDate(), pumpA.getRemainingDose());
+	drawPumpWStatus(5, 85, 40, 120, pumpB.getLabel(), pumpB.getNextDosingDate(), pumpB.getRemainingDose());
+	drawPumpWStatus(5, 135, 40, 170, pumpC.getLabel(), pumpC.getNextDosingDate(), pumpC.getRemainingDose());
 	drawButtonWLabel(240, 60, 310, 110, "Menu");
 	drawMillis(millis());
 }

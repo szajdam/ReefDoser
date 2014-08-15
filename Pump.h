@@ -46,12 +46,12 @@
 
 
 #define TIMEOUT_CALIBRATION_DOSE			5000
-#define TIMEOUT_PIPES_FILL					20000
+#define TIMEOUT_PIPES_FILL					(long)20000
 
-#define TIME_AN_HOUR						60*60*1000 //an Hour
+#define TIME_AN_HOUR						(long)60*60*1000 //an Hour
 
 #define DAILY_DOSES							8
-#define DAILY_DOSES_DELAY					TIME_AN_HOUR //an Hour
+#define DAILY_DOSES_DELAY					(long)TIME_AN_HOUR //an Hour
 #define DAILY_DOSES_RESET_HOUR				0
 #define DAILY_DOSES_START_HOUR				8
 

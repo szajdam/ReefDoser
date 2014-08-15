@@ -36,7 +36,7 @@
 #define NUM_KEY_DATE_SET_DAY		313
 
 #define PUMP_NEXT_TIME_STR			"Next at: "
-#define PUMP_REM_DOSE_STR			"Rem dose: "
+#define PUMP_REM_DOSE_STR			"Remaining dose: "
 
 
 int previousMenu = -1;
@@ -44,6 +44,7 @@ int currentMenu = -1;
 int choosenMenu = -1;
 
 int numKeyResult = -1;
+String numKeyResultStr = "";
 
 UTFT    lcd(ITDB32S,38,39,40,41);
 UTouch  touch( 6, 5, 4, 3, 2);
@@ -438,37 +439,43 @@ void drawNumKeyResult() {
 	lcd.printNumI(numKeyResult, 170, 20);
 }
 void readNumKeyScreen(int x, int y){
-	String result = "";
+	
 	if ((y>=50) && (y<=100)) // buttons 1 - 5
 	{
 		if ((x>=10) && (x<=60))
 		{
 			pressButton(10, 50, 60, 100);
-			result =+ "1";
+			numKeyResultStr.concat('1');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
 		if ((x>=70) && (x<=120))
 		{
 			pressButton(70, 50, 120, 100);
-			result =+ "2";
+			numKeyResultStr.concat('2');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
 		if ((x>=130) && (x<=180))
 		{
 			pressButton(130, 50, 180, 100);
-			result =+ "3";
+			numKeyResultStr.concat('3');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
 		if ((x>=190) && (x<=240))
 		{
 			pressButton(190, 50, 240, 100);
-			result =+ "4";
+			numKeyResultStr.concat('4');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
+			
 		}
-		if ((x>=10) && (x<=60))
+		if ((x>=250) && (x<=300))
 		{
 			pressButton(250, 50, 300, 100);
-			result =+ "5";
+			numKeyResultStr.concat('5');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
 	}
@@ -477,31 +484,36 @@ void readNumKeyScreen(int x, int y){
 		if ((x>=10) && (x<=60))
 		{
 			pressButton(10, 110, 60, 160);
-			result =+ "6";
+			numKeyResultStr.concat('6');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
 		if ((x>=70) && (x<=120))
 		{
 			pressButton(70, 110, 120, 160);
-			result =+ "7";
+			numKeyResultStr.concat('7');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
 		if ((x>=130) && (x<=180))
 		{
 			pressButton(130, 110, 180, 160);
-			result =+ "8";
+			numKeyResultStr.concat('8');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
 		if ((x>=190) && (x<=240))
 		{
 			pressButton(190, 110, 240, 160);
-			result =+ "9";
+			numKeyResultStr.concat('9');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
-		if ((x>=10) && (x<=60))
+		if ((x>=250) && (x<=300))
 		{
 			pressButton(250, 110, 300, 160);
-			result =+ "0";
+			numKeyResultStr.concat('0');
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
 	}
@@ -510,49 +522,50 @@ void readNumKeyScreen(int x, int y){
 		if ((x>=10) && (x<=150)) //clear
 		{
 			pressButton(10, 170, 150, 220);
-			result = "";
+			numKeyResultStr = "\0";
+			numKeyResult = numKeyResultStr.toInt();
 			drawNumKeyResult();
 		}
 		if ((x>=160) && (x<=300)) //set
 		{
 			pressButton(160, 170, 300, 220);
-			numKeyResult = result.toInt();
+			numKeyResult = numKeyResultStr.toInt();
 			choosenMenu = previousMenu; //to verify whether it is good idea - menus track can be lost
 		}
 	}
 }
 void drawPumpCalibScreen(String pumpLabel, int mode = 0){
-// 	lcd.clrScr();
-// 	
-// 	if(mode == 0) {//pre calibration
-// 		
-// 		lcd.setFont(SmallFont);
-// 		
-// 		String labelCal = "Start calibration (5s) for pump  " + pumpLabel;
-// 		String btnLabel = "Start";
-// 		
-// 		lcd.setBackColor(VGA_TRANSPARENT);
-// 		lcd.setColor(255, 255, 255);
-// 		lcd.print(labelCal, 20, 80);
-// 		
-// 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
-// 	}
-// 	else if(mode == 1)	{ //process results (previous menu = NumKey)
-// 		
-// 		String label = "New calibration will be set for pump " + pumpLabel;
-// 		label = label + " with value " + numKeyResult + " ms/ml";
-// 		String btnLabel = "Confirm";
-// 		
-// 		lcd.setFont(SmallFont);
-// 		
-// 		lcd.setBackColor(VGA_TRANSPARENT);
-// 		lcd.setColor(255, 255, 255);
-// 		lcd.print(label, 20, 80);
-// 		
-// 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
-// 	}
-// 
-// 	
+ 	lcd.clrScr();
+ 	
+ 	if(mode == 0) {//pre calibration
+ 		
+ 		lcd.setFont(SmallFont);
+ 		
+ 		String labelCal = "Calibration for pump " + pumpLabel;
+ 		String btnLabel = "Start";
+ 		
+ 		lcd.setBackColor(VGA_TRANSPARENT);
+ 		lcd.setColor(255, 255, 255);
+ 		lcd.print(labelCal, 20, 80);
+ 		
+ 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
+ 	}
+ 	else if(mode == 1)	{ //process results (previous menu = NumKey)
+ 		
+ 		String label = "Pump " + pumpLabel;
+ 		label = label + " set with " + numKeyResult + " ms/ml";
+ 		String btnLabel = "Confirm";
+ 		
+ 		lcd.setFont(SmallFont);
+ 		
+ 		lcd.setBackColor(VGA_TRANSPARENT);
+ 		lcd.setColor(255, 255, 255);
+ 		lcd.print(label, 20, 80);
+ 		
+ 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
+ 	}
+ 
+ 	
 	
 }
 void readPumpCalibScreen(int x, int y){
@@ -745,19 +758,19 @@ void chooseActionPumpsCalibration(int x, int y) {
 		//calibration in
 		if (choosenMenu == NUM_KEY_PUMP_CALIBRATE_A) {
 			previousMenu = currentMenu;
-			drawNumKeyScreen("Pump A cal - result in ml*10");
+			drawNumKeyScreen("PumpA result in ml*10");
 			pumpA.calibrate();
 			currentMenu = NUM_KEY_PUMP_CALIBRATE_A;
 		}
 		else if (choosenMenu == NUM_KEY_PUMP_CALIBRATE_B) {
 			previousMenu = currentMenu;
-			drawNumKeyScreen("Pump B cal - result in ml*10");
+			drawNumKeyScreen("Pump B result in ml*10");
 			pumpB.calibrate();
 			currentMenu = NUM_KEY_PUMP_CALIBRATE_B;
 		}
 		else if (choosenMenu == NUM_KEY_PUMP_CALIBRATE_C) {
 			previousMenu = currentMenu;
-			drawNumKeyScreen("Pump C cal - result in ml*10");
+			drawNumKeyScreen("Pump C result in ml*10");
 			pumpC.calibrate();
 			currentMenu = NUM_KEY_PUMP_CALIBRATE_C;
 		}

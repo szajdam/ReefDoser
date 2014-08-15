@@ -34,7 +34,7 @@
 
 #define PUMP_A_LABEL						"Alk"
 #define PUMP_B_LABEL						"Ca"
-#define PUMP_C_LABEL						"Salt"
+#define PUMP_C_LABEL						"Sal"
 
 #define STATE_UNDEFINED						0
 #define STATE_INITIALIZED					1

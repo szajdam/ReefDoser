@@ -32,21 +32,19 @@ void setup(){
 	readTime();
 	tMeter.init();
 	drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
-	
-	
+	//setRTCTimeFromFile();
 }
 
 
 void loop() {
-	//setRTCTimeFromFile();
-	//chooseAction();
 	drawMillis(lastMillis);
-	//dose();
+	chooseAction();
+	dose();
 	
 	
 	//wait to receive full loop within a second 
 	
-	if (millis() - lastMillis <= loopMillis) {
+	if (millis() - lastMillis >= loopMillis) {
 		lastMillis = millis();
 		readTime();
 		drawBar(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());

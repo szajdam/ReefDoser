@@ -12,20 +12,20 @@
 #define PUMP_PRE_CALIBRATE_B 		112
 #define PUMP_PRE_CALIBRATE_C 		113
 
-#define NUM_KEY_PUMP_CALIBRATE_A 	111
-#define NUM_KEY_PUMP_CALIBRATE_B 	112
-#define NUM_KEY_PUMP_CALIBRATE_C 	113
+#define NUM_KEY_PUMP_CALIBRATE_A 	121
+#define NUM_KEY_PUMP_CALIBRATE_B 	122
+#define NUM_KEY_PUMP_CALIBRATE_C 	123
 
-#define PUMP_PIPES_FILL_A 			111
-#define PUMP_PIPES_FILL_B 			112
-#define PUMP_PIPES_FILL_C 			113
+#define PUMP_PIPES_FILL_A 			131
+#define PUMP_PIPES_FILL_B 			132
+#define PUMP_PIPES_FILL_C 			133
 
-#define NUM_KEY_PUMP_SET_DOSE_A 	131
-#define NUM_KEY_PUMP_SET_DOSE_B 	132
-#define NUM_KEY_PUMP_SET_DOSE_C 	133
+#define NUM_KEY_PUMP_SET_DOSE_A 	141
+#define NUM_KEY_PUMP_SET_DOSE_B 	142
+#define NUM_KEY_PUMP_SET_DOSE_C 	143
 
-#define NUM_KEY_PUMP_SET_DELAY_B 	142
-#define NUM_KEY_PUMP_SET_DELAY_C 	143
+#define NUM_KEY_PUMP_SET_DELAY_B 	152
+#define NUM_KEY_PUMP_SET_DELAY_C 	153
 
 #define NUM_KEY_TIME_SET_HOURS		211
 #define NUM_KEY_TIME_SET_MINUTES	212
@@ -34,6 +34,9 @@
 #define NUM_KEY_DATE_SET_YEAR		311
 #define NUM_KEY_DATE_SET_MONTH		312
 #define NUM_KEY_DATE_SET_DAY		313
+
+#define PUMP_NEXT_TIME_STR			"Next at: "
+#define PUMP_REM_DOSE_STR			"Rem dose: "
 
 
 int previousMenu = -1;
@@ -64,28 +67,28 @@ Pump* getPumpCRef() {
 }
 void dose() {
 	if(pumpA.dose()) {
-		updatePumpPicture(10, 40, 40, 70, pumpA.getLabel(), 0, 255, 0);
+		updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 255, 0);
 	}
 	else {
-		updatePumpPicture(10, 40, 40, 70, pumpA.getLabel(), 0, 0, 255);
+		//updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 0, 255);
 	}
 	if(pumpB.dose()) {
-		updatePumpPicture(10, 90, 40, 120, pumpB.getLabel(), 0, 255, 0);
+		updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 255, 0);
 	}
 	else {
-		updatePumpPicture(10, 90, 40, 120, pumpB.getLabel(), 0, 0, 255);
+		//updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 0, 255);
 	}
 	if(pumpC.dose()) {
-		updatePumpPicture(10, 140, 40, 170, pumpC.getLabel(), 0, 255, 0);
+		updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 255, 0);
 	}
 	else {
-		updatePumpPicture(10, 140, 40, 170, pumpC.getLabel(), 0, 0, 255);
+		//updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 0, 255);
 	}
 }
 void updatePumpsStatus() {
-	updatePumpStatus(10, 40, 40, 70, pumpA.getNextDosingDate(), pumpA.getRemainingDose());
-	updatePumpStatus(10, 90, 40, 120, pumpB.getNextDosingDate(), pumpB.getRemainingDose());
-	updatePumpStatus(10, 140, 40, 170, pumpC.getNextDosingDate(), pumpC.getRemainingDose());
+	updatePumpStatus(5, 35, 40, 70, pumpA.getNextDosingDate(), pumpA.getRemainingDose());
+	updatePumpStatus(5, 85, 40, 120, pumpB.getNextDosingDate(), pumpB.getRemainingDose());
+	updatePumpStatus(5, 135, 40, 170, pumpC.getNextDosingDate(), pumpC.getRemainingDose());
 }
 //layout
 // void lcdOn(){
@@ -119,7 +122,7 @@ void drawButton(int x1, int y1, int x2, int y2){
 	lcd.setColor(255, 255, 255);
 	lcd.drawRoundRect (x1, y1, x2, y2);
 }
-void drawButtonWLabel(int x1, int y1, int x2, int y2, String label, int fontSize = 0) {
+void drawButtonWLabel(int x1, int y1, int x2, int y2, String labelBtn, int fontSize = 0) {
 	if(fontSize == 0) {
 		lcd.setFont(BigFont);
 	}
@@ -130,9 +133,9 @@ void drawButtonWLabel(int x1, int y1, int x2, int y2, String label, int fontSize
 	lcd.setColor(255, 255, 255);
 	lcd.setBackColor(0, 0, 255);
 	
-	int x_label = x1+round((x2-x1)/2)-round((label.length() * lcd.getFontXsize())/2); //font size 16x16
+	int x_label = x1+round((x2-x1)/2)-round((labelBtn.length() * lcd.getFontXsize())/2); //font size 16x16
 	int y_label = y2-round((y2-y1)/2)-lcd.getFontYsize()/2; //font size 16x16
-	lcd.print(label, x_label, y_label);
+	lcd.print(labelBtn, x_label, y_label);
 }
 void pressButton(int x1, int y1, int x2, int y2)
 {
@@ -183,48 +186,52 @@ void drawPumpWStatus(int x1, int y1, int x2, int y2, String label, tmElements_t 
 	int y_label2 = y2 - (lcd.getFontYsize());
 	lcd.setColor(255, 255, 255);
 	lcd.setBackColor(0, 0, 0);
-	String str_label1 = "Next dose at " + timeToString(nextDoseTime);
+	String str_label1 = PUMP_NEXT_TIME_STR + timeToString(nextDoseTime);
 	lcd.print(str_label1, x_label, y_label1);
-	String str_label2 = "Remaining dose: " + remainingDose;
-	 str_label2 =+ " ml";
+	String str_label2 = PUMP_REM_DOSE_STR + remainingDose;
+	//str_label2 =+ " ml";
 	lcd.print(str_label2, x_label, y_label2);
 }
 void updatePumpStatus(int x1, int y1, int x2, int y2, tmElements_t nextDoseTime, int remainingDose) {
-	lcd.setFont(SmallFont);
-	int x_label = x2 + 5;
-	int y_label1 = y1 + (lcd.getFontYsize()/2);
-	int y_label2 = y2 - (lcd.getFontYsize());
-	lcd.setColor(255, 255, 255);
-	lcd.setBackColor(0, 0, 0);
-	String str_label1 = "Next dose at " + timeToString(nextDoseTime);
-	lcd.print(str_label1, x_label, y_label1);
-	String str_label2 = "Remaining dose: " + remainingDose;
-	str_label2 =+ " ml";
-	lcd.print(str_label2, x_label, y_label2);
+	if(currentMenu == MAIN_SCREEN){
+		lcd.setFont(SmallFont);
+		int x_label = x2 + 5;
+		int y_label1 = y1 + (lcd.getFontYsize()/2);
+		int y_label2 = y2 - (lcd.getFontYsize());
+		lcd.setColor(255, 255, 255);
+		lcd.setBackColor(0, 0, 0);
+		String str_label1 = PUMP_NEXT_TIME_STR + timeToString(nextDoseTime);
+		lcd.print(str_label1, x_label, y_label1);
+		String str_label2 = PUMP_REM_DOSE_STR + String(remainingDose);
+		//str_label2 =+ " ml";
+		lcd.print(str_label2, x_label, y_label2);
+	}
 }
-void updatePumpPicture(int x1, int y1, int x2, int y2, String label, int colorR, int colorG, int colorB) {
-	int radius = (x2-x1)/2;
-	int x = x1 + radius;
-	int y = y1 + radius;
-	lcd.setFont(BigFont);
-	lcd.setColor(colorR, colorG, colorB);
-	lcd.fillCircle(x, y, radius);
-	lcd.setColor(255, 255, 255);
-	lcd.drawCircle(x, y, radius);
+void updatePumpPicture(int x1, int y1, int x2, int y2, String labelPump, int colorR, int colorG, int colorB) {
+	if(currentMenu == MAIN_SCREEN){
+		int radius = (x2-x1)/2;
+		int x = x1 + radius;
+		int y = y1 + radius;
+		//lcd.setFont(BigFont);
+		lcd.setColor(colorR, colorG, colorB);
+		lcd.fillCircle(x, y, radius);
+		lcd.setColor(255, 255, 255);
+		lcd.drawCircle(x, y, radius);
 	
-	lcd.setFont(SmallFont);
-	int x_label = x-round((label.length() * lcd.getFontXsize())/2); //font size 16x16
-	int y_label = y-(lcd.getFontYsize()/2); //font size 16x16
-	lcd.setBackColor(0, 255, 0);
-	lcd.print(label, x_label, y_label);
-	lcd.setBackColor(0, 0, 255);
+		lcd.setFont(SmallFont);
+		int x_label = x-round((labelPump.length() * lcd.getFontXsize())/2); //font size 16x16
+		int y_label = y-(lcd.getFontYsize()/2); //font size 16x16
+		lcd.setBackColor(0, 0, 255);
+		lcd.print(labelPump, x_label, y_label);
+		
+	}
 }
 void drawMillis(unsigned long currMilis){
 	lcd.setFont(SmallFont);
-	String millisMsg = String(currMilis);
+	//String millisMsg = String(currMilis);
 	lcd.setBackColor(0,0,0);
 	lcd.setColor(255, 255, 255);
-	lcd.print(millisMsg, 20, 225);
+	lcd.printNumI(currMilis, 20, 225);
 }
 void drawLog(String logMsg){
 	lcd.setFont(SmallFont);
@@ -291,7 +298,7 @@ void readMainMenuScreen(int x, int y){
 		if ((x>=260) && (x<=310))  // Button: Exit menu
 		{
 			pressButton(260, 40, 310, 100);
-			choosenMenu = MAIN_MENU_SCREEN;
+			choosenMenu = MAIN_SCREEN;
 		}
 	}
 }
@@ -515,37 +522,37 @@ void readNumKeyScreen(int x, int y){
 	}
 }
 void drawPumpCalibScreen(String pumpLabel, int mode = 0){
-	lcd.clrScr();
-	
-	if(mode == 0) {//pre calibration
-		
-		lcd.setFont(SmallFont);
-		
-		String label = "Start calibration (5s) for pump  " + pumpLabel;
-		String btnLabel = "Start";
-		
-		lcd.setBackColor(VGA_TRANSPARENT);
-		lcd.setColor(255, 255, 255);
-		lcd.print(label, 20, 80);
-		
-		drawButtonWLabel(80, 110, 240, 160, btnLabel);
-	}
-	else if(mode == 1)	{ //process results (previous menu = NumKey)
-		
-		String label = "New calibration will be set for pump " + pumpLabel;
-		label = label + " with value " + numKeyResult + " ms/ml";
-		String btnLabel = "Confirm";
-		
-		lcd.setFont(SmallFont);
-		
-		lcd.setBackColor(VGA_TRANSPARENT);
-		lcd.setColor(255, 255, 255);
-		lcd.print(label, 20, 80);
-		
-		drawButtonWLabel(80, 110, 240, 160, btnLabel);
-	}
-
-	drawMillis(millis());
+// 	lcd.clrScr();
+// 	
+// 	if(mode == 0) {//pre calibration
+// 		
+// 		lcd.setFont(SmallFont);
+// 		
+// 		String labelCal = "Start calibration (5s) for pump  " + pumpLabel;
+// 		String btnLabel = "Start";
+// 		
+// 		lcd.setBackColor(VGA_TRANSPARENT);
+// 		lcd.setColor(255, 255, 255);
+// 		lcd.print(labelCal, 20, 80);
+// 		
+// 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
+// 	}
+// 	else if(mode == 1)	{ //process results (previous menu = NumKey)
+// 		
+// 		String label = "New calibration will be set for pump " + pumpLabel;
+// 		label = label + " with value " + numKeyResult + " ms/ml";
+// 		String btnLabel = "Confirm";
+// 		
+// 		lcd.setFont(SmallFont);
+// 		
+// 		lcd.setBackColor(VGA_TRANSPARENT);
+// 		lcd.setColor(255, 255, 255);
+// 		lcd.print(label, 20, 80);
+// 		
+// 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
+// 	}
+// 
+// 	
 	
 }
 void readPumpCalibScreen(int x, int y){
@@ -565,28 +572,44 @@ void readPumpCalibScreen(int x, int y){
 	}
 }
 void chooseAction() {
-	
+ 	String menus = "p:" + String(previousMenu);
+ 	menus = menus + ", c:";
+ 	menus = menus + String(currentMenu);
+	menus = menus + ", n:";
+ 	menus = menus + String(choosenMenu);
+ 	drawLog(menus);
 	if (touch.dataAvailable())
 	{
 		touch.read();
 		x=touch.getX();
 		y=touch.getY();
-		if (currentMenu == MAIN_SCREEN)
+		if (currentMenu == MAIN_SCREEN){
 		chooseActionMain(x, y);
-		if(currentMenu == MAIN_MENU_SCREEN)
+		}
+		else if(currentMenu == MAIN_MENU_SCREEN) {
 		chooseActionMainMenu(x, y);
-		if(currentMenu == PUMPS_MENU_SCREEN)
+		}
+		else if(currentMenu == PUMPS_MENU_SCREEN){
 		chooseActionPumpMenu(x, y);
-		if(currentMenu >= PUMP_PRE_CALIBRATE_A && currentMenu <= PUMP_PRE_CALIBRATE_C)
+		}
+		else if(currentMenu == PUMP_PRE_CALIBRATE_A && currentMenu <= PUMP_PRE_CALIBRATE_C){
 		chooseActionPumpsCalibration(x, y);
-		if(currentMenu == TIME_SET_MENU_SCREEN)
+		}
+		else if(currentMenu == TIME_SET_MENU_SCREEN){
 		chooseActionTimeSet(x, y);
-		if(currentMenu == DATE_SET_MENU_SCREEN)
+		}
+		else if(currentMenu == DATE_SET_MENU_SCREEN){
 		chooseActionDateSet(x, y);
-		if(currentMenu >= NUM_KEY_PUMP_CALIBRATE_A && currentMenu <= NUM_KEY_PUMP_CALIBRATE_C)
+		}
+// 		else if(currentMenu >= PUMP_PIPES_FILL_A && currentMenu <= PUMP_PIPES_FILL_C){
+// 		chooseActionPumpMenu(x, y);
+// 		}
+		else if(currentMenu >= NUM_KEY_PUMP_CALIBRATE_A && currentMenu <= NUM_KEY_PUMP_CALIBRATE_C){
+			chooseActionNumKeyPumpsCalibrate(x, y);
+		}
+		else if(currentMenu >= NUM_KEY_PUMP_SET_DOSE_A && currentMenu <= NUM_KEY_PUMP_SET_DOSE_C){
 		chooseActionNumKeyPumpsCalibrate(x, y);
-		if(currentMenu >= NUM_KEY_PUMP_SET_DOSE_A && currentMenu <= NUM_KEY_PUMP_SET_DOSE_C)
-		chooseActionNumKeyPumpsCalibrate(x, y);
+		}
 	}
 }
 void chooseActionMain(int x, int y) {
@@ -604,7 +627,7 @@ void chooseActionMainMenu(int x, int y) {
 	//handler for Main Menu
 	readMainMenuScreen(x, y);
 	if (currentMenu != choosenMenu) {
-		if(currentMenu == PUMPS_MENU_SCREEN) {
+		if(choosenMenu == PUMPS_MENU_SCREEN) {
 			previousMenu = currentMenu;
 			drawPumpsMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = PUMPS_MENU_SCREEN;
@@ -654,19 +677,28 @@ void chooseActionPumpMenu(int x, int y) {
 			previousMenu = currentMenu;
 			currentMenu = PUMP_PIPES_FILL_A;
 			pumpA.fillPipes();
+			//drawPumpsMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			previousMenu = currentMenu;
 			choosenMenu = PUMPS_MENU_SCREEN;
+			currentMenu = choosenMenu;
 		}
 		else if (choosenMenu == PUMP_PIPES_FILL_B){
 			previousMenu = currentMenu;
 			currentMenu = PUMP_PIPES_FILL_B;
 			pumpB.fillPipes();
+			//drawPumpsMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			previousMenu = currentMenu;
 			choosenMenu = PUMPS_MENU_SCREEN;
+			currentMenu = choosenMenu;
 		}
 		else if (choosenMenu == PUMP_PIPES_FILL_C){
 			previousMenu = currentMenu;
 			currentMenu = PUMP_PIPES_FILL_C;
 			pumpC.fillPipes();
+			//drawPumpsMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			previousMenu = currentMenu;
 			choosenMenu = PUMPS_MENU_SCREEN;
+			currentMenu = choosenMenu;
 		}
 		//dosage setup
 		else if (choosenMenu == NUM_KEY_PUMP_SET_DOSE_A){
@@ -695,12 +727,12 @@ void chooseActionPumpMenu(int x, int y) {
 		}
 		else if (choosenMenu == MAIN_MENU_SCREEN){
 			previousMenu = currentMenu;
-			drawMainMenuScreen(0, getCurrentTimeStr(), getCurrentDateStr());
+			drawMainMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = MAIN_MENU_SCREEN;
 		}
 		else if (choosenMenu == MAIN_SCREEN){
 			previousMenu = currentMenu;
-			drawMainScreen(0, getCurrentTimeStr(), getCurrentDateStr());
+			drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = MAIN_SCREEN;
 		}
 	}
@@ -764,25 +796,25 @@ void chooseActionNumKeyPumpsCalibrate(int x, int y) {
 			previousMenu = currentMenu;
 			drawPumpCalibScreen(pumpA.getLabel(), 1);
 			pumpA.setCalibration(numKeyResult);
-			drawLog("pumpA.setCalibration " + numKeyResult);
+			//drawLog("pumpA.setCalibration " + numKeyResult);
 			currentMenu = PUMP_PRE_CALIBRATE_A;
 		}
 		else if (choosenMenu == PUMP_PRE_CALIBRATE_B){
 			previousMenu = currentMenu;
 			drawPumpCalibScreen(pumpB.getLabel(), 1);
 			pumpB.setCalibration(numKeyResult);
-			drawLog("pumpB.setCalibration " + numKeyResult);
+			//drawLog("pumpB.setCalibration " + numKeyResult);
 			currentMenu = PUMP_PRE_CALIBRATE_B;
 		}
 		else if (choosenMenu == PUMP_PRE_CALIBRATE_C){
 			previousMenu = currentMenu;
 			drawPumpCalibScreen(pumpC.getLabel(), 1);
 			pumpC.setCalibration(numKeyResult);
-			drawLog("pumpC.setCalibration " + numKeyResult);
+			//drawLog("pumpC.setCalibration " + numKeyResult);
 			currentMenu = PUMP_PRE_CALIBRATE_C;
 		}
 		else {
-			drawLog("calibration - no setup " + numKeyResult);
+			//drawLog("calibration - no setup " + numKeyResult);
 		}
 		numKeyResult = 0;
 	}

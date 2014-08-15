@@ -30,7 +30,7 @@ void drawBar(float temp, String time, String date);
 void drawPump(int x1, int y1, int x2, int y2, String label);
 void drawPumpWStatus(int x1, int y1, int x2, int y2, String label, tmElements_t nextDoseTime, int remainingDose);
 void updatePumpStatus(int x1, int y1, int x2, int y2, tmElements_t nextDoseTime, int remainingDose);
-void updatePumpPicture(int x1, int y1, int x2, int y2, String label, int colorR, int colorG, int colorB);
+void updatePumpPicture(int x1, int y1, int x2, int y2, String labelPump, int colorR, int colorG, int colorB);
 void drawMillis(unsigned long currMilis);
 void drawLog(String logMsg);
 void drawMainScreen(float temp, String time, String date);

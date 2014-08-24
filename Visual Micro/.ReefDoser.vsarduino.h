@@ -9,6 +9,7 @@
 */
 
 #define __AVR_ATmega2560__
+#define _VMDEBUG 1
 #define ARDUINO 101
 #define ARDUINO_MAIN
 #define F_CPU 16000000L
@@ -28,8 +29,8 @@ void drawButton(int x1, int y1, int x2, int y2);
 void pressButton(int x1, int y1, int x2, int y2);
 void drawBar(float temp, String time, String date);
 void drawPump(int x1, int y1, int x2, int y2, String label);
-void drawPumpWStatus(int x1, int y1, int x2, int y2, String label, tmElements_t nextDoseTime, int remainingDose);
-void updatePumpStatus(int x1, int y1, int x2, int y2, tmElements_t nextDoseTime, int remainingDose);
+void drawPumpWStatus(int x1, int y1, int x2, int y2, String label, String nextDoseTimeStr, int remainingDose);
+void updatePumpStatus(int x1, int y1, int x2, int y2, String nextDoseTimeStr, int remainingDose);
 void updatePumpPicture(int x1, int y1, int x2, int y2, String labelPump, int colorR, int colorG, int colorB);
 void drawMillis(unsigned long currMilis);
 void drawLog(String logMsg);

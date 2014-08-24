@@ -49,9 +49,9 @@ String numKeyResultStr = "";
 UTFT    lcd(ITDB32S,38,39,40,41);
 UTouch  touch( 6, 5, 4, 3, 2);
 
-Pump pumpA(INDEX_PUMP_A, currentTime);
-Pump pumpB(INDEX_PUMP_B, currentTime);
-Pump pumpC(INDEX_PUMP_C, currentTime);
+Pump pumpA;
+Pump pumpB;
+Pump pumpC;
 
 
 extern uint8_t BigFont[]; //16x16
@@ -87,9 +87,9 @@ void dose() {
 	}
 }
 void updatePumpsStatus() {
-	updatePumpStatus(5, 35, 40, 70, pumpA.getNextDosingDate(), pumpA.getRemainingDose());
-	updatePumpStatus(5, 85, 40, 120, pumpB.getNextDosingDate(), pumpB.getRemainingDose());
-	updatePumpStatus(5, 135, 40, 170, pumpC.getNextDosingDate(), pumpC.getRemainingDose());
+	updatePumpStatus(5, 35, 40, 70, pumpA.getNextDosingTimeStr(), pumpA.getRemainingDose());
+	updatePumpStatus(5, 85, 40, 120, pumpB.getNextDosingTimeStr(), pumpB.getRemainingDose());
+	updatePumpStatus(5, 135, 40, 170, pumpC.getNextDosingTimeStr(), pumpC.getRemainingDose());
 }
 //layout
 // void lcdOn(){
@@ -112,9 +112,19 @@ void scrInit() {
 	previousMenu = 0;
 	choosenMenu = 0;
 	
+	pumpA = Pump(INDEX_PUMP_A, currentTime);
+	pumpB = Pump(INDEX_PUMP_B, currentTime);
+	pumpC = Pump(INDEX_PUMP_C, currentTime);
+	
+	if(false){
+		pumpA.initEEPROM();
+		pumpB.initEEPROM();
+		pumpC.initEEPROM();
+	}
 	pumpA.init();
 	pumpB.init(pumpA);
-	pumpB.init(pumpB);
+	pumpC.init(pumpB);
+	
 
 }
 void drawButton(int x1, int y1, int x2, int y2){
@@ -177,7 +187,7 @@ void drawPump(int x1, int y1, int x2, int y2, String label) {
 	lcd.print(label, x_label, y_label);
 	lcd.setBackColor(0, 0, 255);
 }
-void drawPumpWStatus(int x1, int y1, int x2, int y2, String label, tmElements_t nextDoseTime, int remainingDose) {
+void drawPumpWStatus(int x1, int y1, int x2, int y2, String label, String nextDoseTimeStr, int remainingDose) {
 	lcd.setFont(SmallFont);
 	drawPump(x1, y1, x2, y2, label);
 	//int radius = x2-x1/2;
@@ -187,13 +197,13 @@ void drawPumpWStatus(int x1, int y1, int x2, int y2, String label, tmElements_t 
 	int y_label2 = y2 - (lcd.getFontYsize());
 	lcd.setColor(255, 255, 255);
 	lcd.setBackColor(0, 0, 0);
-	String str_label1 = PUMP_NEXT_TIME_STR + timeToString(nextDoseTime);
+	String str_label1 = PUMP_NEXT_TIME_STR + nextDoseTimeStr;
 	lcd.print(str_label1, x_label, y_label1);
 	String str_label2 = PUMP_REM_DOSE_STR + remainingDose;
 	//str_label2 =+ " ml";
 	lcd.print(str_label2, x_label, y_label2);
 }
-void updatePumpStatus(int x1, int y1, int x2, int y2, tmElements_t nextDoseTime, int remainingDose) {
+void updatePumpStatus(int x1, int y1, int x2, int y2, String nextDoseTimeStr, int remainingDose) {
 	if(currentMenu == MAIN_SCREEN){
 		lcd.setFont(SmallFont);
 		int x_label = x2 + 5;
@@ -201,7 +211,7 @@ void updatePumpStatus(int x1, int y1, int x2, int y2, tmElements_t nextDoseTime,
 		int y_label2 = y2 - (lcd.getFontYsize());
 		lcd.setColor(255, 255, 255);
 		lcd.setBackColor(0, 0, 0);
-		String str_label1 = PUMP_NEXT_TIME_STR + timeToString(nextDoseTime);
+		String str_label1 = PUMP_NEXT_TIME_STR + nextDoseTimeStr;
 		lcd.print(str_label1, x_label, y_label1);
 		String str_label2 = PUMP_REM_DOSE_STR + String(remainingDose);
 		//str_label2 =+ " ml";
@@ -247,9 +257,9 @@ void drawMainScreen(float temp, String time, String date) {
 	currentMenu = MAIN_SCREEN;
 	
 	drawBar(temp, time, date);
-	drawPumpWStatus(5, 35, 40, 70, pumpA.getLabel(), pumpA.getNextDosingDate(), pumpA.getRemainingDose());
-	drawPumpWStatus(5, 85, 40, 120, pumpB.getLabel(), pumpB.getNextDosingDate(), pumpB.getRemainingDose());
-	drawPumpWStatus(5, 135, 40, 170, pumpC.getLabel(), pumpC.getNextDosingDate(), pumpC.getRemainingDose());
+	drawPumpWStatus(5, 35, 40, 70, pumpA.getLabel(), pumpA.getNextDosingTimeStr(), pumpA.getRemainingDose());
+	drawPumpWStatus(5, 85, 40, 120, pumpB.getLabel(), pumpB.getNextDosingTimeStr(), pumpB.getRemainingDose());
+	drawPumpWStatus(5, 135, 40, 170, pumpC.getLabel(), pumpC.getNextDosingTimeStr(), pumpC.getRemainingDose());
 	drawButtonWLabel(240, 60, 310, 110, "Menu");
 	drawMillis(millis());
 }
@@ -590,6 +600,10 @@ void chooseAction() {
  	menus = menus + String(currentMenu);
 	menus = menus + ", n:";
  	menus = menus + String(choosenMenu);
+	menus = menus + ", pas:";
+	menus = menus + String(pumpA.getState());
+	menus = menus + ", pbs:";
+	menus = menus + String(pumpB.getState());
  	drawLog(menus);
 	if (touch.dataAvailable())
 	{
@@ -794,7 +808,7 @@ void chooseActionPumpsCalibration(int x, int y) {
 }
 void chooseActionTimeSet(int x, int y) {
 	
-	//TODO: handler
+	setRTCTimeFromFile();
 }
 void chooseActionDateSet(int x, int y) {
 

@@ -28,9 +28,9 @@ ThermoMeter tMeter;
 
 
 void setup(){
-	scrInit();
 	readTime();
 	tMeter.init();
+	scrInit();
 	drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 	//setRTCTimeFromFile();
 }

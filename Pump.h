@@ -51,7 +51,7 @@
 #define TIME_AN_HOUR						(long)60*60*1000 //an Hour
 
 #define DAILY_DOSES							8
-#define DAILY_DOSES_DELAY					(long)TIME_AN_HOUR //an Hour
+#define DAILY_DOSES_DELAY					(long)60*60*1000 //an Hour delay between particular doses
 #define DAILY_DOSES_RESET_HOUR				0
 #define DAILY_DOSES_START_HOUR				8
 
@@ -102,6 +102,13 @@
 
 #define EEPROM_ADDR_LAST_DOSE_DAY			1100
 
+typedef struct  {
+	uint8_t Second;
+	uint8_t Minute;
+	uint8_t Hour;
+	uint8_t Day;
+} 	doseTime_t;
+
 class Pump
 {
 	protected:
@@ -118,18 +125,18 @@ class Pump
 	int PumpState;
 	unsigned long PumpStateMillis;
 	unsigned int LastVolumePumped;
-	tmElements_t LastDosingTime;
-	tmElements_t NextDosingTime;
+	doseTime_t LastDosingTime;
+	doseTime_t NextDosingTime;
 	unsigned int RemainingDailyDose; //ml
 	//unsigned int RemainingDailyDosesNo; //times
 	unsigned int PumpDelay;
 	
-	const Pump *DependentToPump;
-	const tmElements_t *CurrentTime;
+	Pump *DependentToPump;
+	tmElements_t *CurrentTime;
 	
 	//dosing definition
 	int DailyDose;
-	int PumpPerf;
+	unsigned long PumpPerf;
 	
 	//methods
 	void EEPROMWriteInt(int, int);
@@ -144,7 +151,10 @@ class Pump
 	unsigned long checkDosingEnd();
 	void doseEnd(unsigned long);
 	
+	String to2Digits(String number);
+	
 	public:
+	Pump();
 	Pump(int, tmElements_t&);
 	void init();
 	void init(Pump&);
@@ -155,8 +165,8 @@ class Pump
 	unsigned long getMillisInState();
 	
 	int getRemainingDose();
-	tmElements_t getNextDosingDate();
-	
+	doseTime_t getNextDosingTime();
+	String getNextDosingTimeStr();
 	void calibrate();
 	void setCalibration(int);
 	void setDosage(int);
@@ -165,6 +175,8 @@ class Pump
 	boolean dose();
 	
 	void advanceDay();
+	
+	void initEEPROM() ;
 };
 
 

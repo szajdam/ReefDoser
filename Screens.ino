@@ -71,19 +71,19 @@ void dose() {
 		updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 255, 0);
 	}
 	else {
-		//updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 0, 255);
+		updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 0, 255);
 	}
 	if(pumpB.dose()) {
 		updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 255, 0);
 	}
 	else {
-		//updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 0, 255);
+		updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 0, 255);
 	}
 	if(pumpC.dose()) {
 		updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 255, 0);
 	}
 	else {
-		//updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 0, 255);
+		updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 0, 255);
 	}
 }
 void updatePumpsStatus() {

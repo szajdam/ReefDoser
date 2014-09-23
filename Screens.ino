@@ -371,7 +371,7 @@ void readPumpMenuScreen(int x, int y){
 			choosenMenu = NUM_KEY_PUMP_SET_DOSE_A;
 		}
 	}
-	if ((y>=100) && (y<=150)) //Pump B row
+	else if ((y>=100) && (y<=150)) //Pump B row
 	{
 		if ((x>=10) && (x<=60))  // Button: PB Calibrate
 		{
@@ -396,12 +396,12 @@ void readPumpMenuScreen(int x, int y){
 	}
 	if ((x>=260) && (x<=310))
 	{
-		if ((y>=40) && (x<=100))  // Button: BACK TO MAIN menu
+		if ((y>=40) && (y<=100))  // Button: BACK TO MAIN menu
 		{
 			pressButton(260, 40, 310, 100);
 			choosenMenu = MAIN_MENU_SCREEN;
 		}
-		if ((x>=140) && (x<=210))  // Button: Exit menu
+		else if ((y>=140) && (y<=210))  // Button: Exit menu
 		{
 			pressButton(260, 140, 310, 210);
 			choosenMenu = MAIN_SCREEN;

@@ -53,6 +53,10 @@ Pump pumpA;
 Pump pumpB;
 Pump pumpC;
 
+int pumpACurrentState = 0;
+int pumpBCurrentState = 0;
+int pumpCCurrentState = 0;
+
 
 extern uint8_t BigFont[]; //16x16
 extern uint8_t SmallFont[]; //SmallFont[] 8x12
@@ -67,24 +71,40 @@ Pump* getPumpCRef() {
 	return &pumpC;
 }
 void dose() {
-	if(pumpA.dose()) {
-		updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 255, 0);
+	int pumpState = 0;
+	pumpState = pumpA.dose();
+	if (pumpState != pumpACurrentState) {
+		if(pumpState == 3) {
+			updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 255, 0);
+		}
+		else {
+			updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 0, 255);
+		}
+		pumpACurrentState = pumpState;
 	}
-	else {
-		updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 0, 255);
+	
+	pumpState = pumpB.dose();
+	if (pumpState != pumpBCurrentState) {
+		if(pumpState == 3) {
+			updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 255, 0);
+		}
+		else {
+			updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 0, 255);
+		}
+		pumpBCurrentState = pumpState;
 	}
-	if(pumpB.dose()) {
-		updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 255, 0);
+	
+	pumpState = pumpC.dose();
+	if (pumpState != pumpCCurrentState) {
+		if(pumpState == 3) {
+			updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 255, 0);
+		}
+		else {
+			updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 0, 255);
+		}
+		pumpCCurrentState = pumpState;
 	}
-	else {
-		updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 0, 255);
-	}
-	if(pumpC.dose()) {
-		updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 255, 0);
-	}
-	else {
-		updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 0, 255);
-	}
+	
 }
 void updatePumpsStatus() {
 	updatePumpStatus(5, 35, 40, 70, pumpA.getNextDosingTimeStr(), pumpA.getRemainingDose());

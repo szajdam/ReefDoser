@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
 Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "ReefDoser", "ReefDoser.cppproj", "{07B459B4-8D76-4638-BC6D-A459BA2D616B}"
 EndProject
-Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "lcdTest", "..\..\OneDrive\Projekty\lcdTest\lcdTest.cppproj", "{FB2862C1-9A5B-40E6-8B91-A1A633FD8539}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -15,10 +13,6 @@ Global
 		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Debug|AVR.Build.0 = Debug|AVR
 		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Release|AVR.ActiveCfg = Release|AVR
 		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Release|AVR.Build.0 = Release|AVR
-		{FB2862C1-9A5B-40E6-8B91-A1A633FD8539}.Debug|AVR.ActiveCfg = Debug|AVR
-		{FB2862C1-9A5B-40E6-8B91-A1A633FD8539}.Debug|AVR.Build.0 = Debug|AVR
-		{FB2862C1-9A5B-40E6-8B91-A1A633FD8539}.Release|AVR.ActiveCfg = Release|AVR
-		{FB2862C1-9A5B-40E6-8B91-A1A633FD8539}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

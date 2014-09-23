@@ -35,6 +35,7 @@ void readTime() {
 	if (!RTC.read(currentTime)) {
 		if (RTC.chipPresent()) {
 			drawLog("The DS1307 is stopped.  Please set Time");
+			setRTCTimeFromFile();
 			} else {
 			drawLog("DS1307 read error!  Please check the circuitry.");
 		}

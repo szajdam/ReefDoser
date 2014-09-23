@@ -34,7 +34,7 @@
 
 #define PUMP_A_LABEL						"Alk"
 #define PUMP_B_LABEL						"Ca"
-#define PUMP_C_LABEL						"Sal"
+#define PUMP_C_LABEL						"NA"
 
 #define STATE_UNDEFINED						0
 #define STATE_INITIALIZED					1
@@ -129,7 +129,7 @@ class Pump
 	doseTime_t NextDosingTime;
 	unsigned int RemainingDailyDose; //ml
 	//unsigned int RemainingDailyDosesNo; //times
-	unsigned int PumpDelay;
+	unsigned int PumpDelay; //minutes;
 	
 	Pump *DependentToPump;
 	tmElements_t *CurrentTime;
@@ -172,7 +172,7 @@ class Pump
 	void setDosage(int);
 	void fillPipes();
 	void setDailyDose(int);
-	boolean dose();
+	int dose();
 	
 	void advanceDay();
 	

@@ -62,13 +62,13 @@ String getCurrentDateStr();
 String dateToString(tmElements_t date);
 String to2Digits(String number);
 
-#include "D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega\pins_arduino.h" 
-#include "D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino\arduino.h"
-#include "D:\Projekty\ReefDoser\ReefDoser.ino"
-#include "D:\Projekty\ReefDoser\Definitions.h"
-#include "D:\Projekty\ReefDoser\Pump.cpp"
-#include "D:\Projekty\ReefDoser\Pump.h"
-#include "D:\Projekty\ReefDoser\Screens.ino"
-#include "D:\Projekty\ReefDoser\ThermoMeter.cpp"
-#include "D:\Projekty\ReefDoser\ThermoMeter.h"
-#include "D:\Projekty\ReefDoser\TimeUtils.ino"
+#include "D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega\pins_arduino.h" 
+#include "D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino\arduino.h"
+#include "D:\Private\Projekty\ReefDoser\ReefDoser.ino"
+#include "D:\Private\Projekty\ReefDoser\Definitions.h"
+#include "D:\Private\Projekty\ReefDoser\Pump.cpp"
+#include "D:\Private\Projekty\ReefDoser\Pump.h"
+#include "D:\Private\Projekty\ReefDoser\Screens.ino"
+#include "D:\Private\Projekty\ReefDoser\ThermoMeter.cpp"
+#include "D:\Private\Projekty\ReefDoser\ThermoMeter.h"
+#include "D:\Private\Projekty\ReefDoser\TimeUtils.ino"

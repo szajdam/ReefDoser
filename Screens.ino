@@ -53,6 +53,10 @@ Pump pumpA;
 Pump pumpB;
 Pump pumpC;
 
+int pumpACurrentState = 0;
+int pumpBCurrentState = 0;
+int pumpCCurrentState = 0;
+
 
 extern uint8_t BigFont[]; //16x16
 extern uint8_t SmallFont[]; //SmallFont[] 8x12
@@ -67,24 +71,40 @@ Pump* getPumpCRef() {
 	return &pumpC;
 }
 void dose() {
-	if(pumpA.dose()) {
-		updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 255, 0);
+	int pumpState = 0;
+	pumpState = pumpA.dose();
+	if (pumpState != pumpACurrentState) {
+		if(pumpState == 3) {
+			updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 255, 0);
+		}
+		else {
+			updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 0, 255);
+		}
+		pumpACurrentState = pumpState;
 	}
-	else {
-		//updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 0, 255);
+	
+	pumpState = pumpB.dose();
+	if (pumpState != pumpBCurrentState) {
+		if(pumpState == 3) {
+			updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 255, 0);
+		}
+		else {
+			updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 0, 255);
+		}
+		pumpBCurrentState = pumpState;
 	}
-	if(pumpB.dose()) {
-		updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 255, 0);
+	
+	pumpState = pumpC.dose();
+	if (pumpState != pumpCCurrentState) {
+		if(pumpState == 3) {
+			updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 255, 0);
+		}
+		else {
+			updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 0, 255);
+		}
+		pumpCCurrentState = pumpState;
 	}
-	else {
-		//updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 0, 255);
-	}
-	if(pumpC.dose()) {
-		updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 255, 0);
-	}
-	else {
-		//updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 0, 255);
-	}
+	
 }
 void updatePumpsStatus() {
 	updatePumpStatus(5, 35, 40, 70, pumpA.getNextDosingTimeStr(), pumpA.getRemainingDose());
@@ -328,11 +348,6 @@ void drawPumpsMenuScreen(float temp, String time, String date) {
 	drawButtonWLabel(130, 100, 180, 150, "B Dose",1);
 	drawButtonWLabel(190, 100, 240, 150, "B Delay",1);
 	
-	drawButtonWLabel(10, 160, 60, 210, "C Cal",1);
-	drawButtonWLabel(70, 160, 120, 210, "C Fill",1);
-	drawButtonWLabel(130, 160, 180, 210, "C Dose",1);
-	drawButtonWLabel(190, 160, 240, 210, "C Delay",1);
-	
 	drawButtonWLabel(260, 40, 310, 100, "Back",1);
 	drawButtonWLabel(260, 140, 310, 210, "Exit",1);
 	drawMillis(millis());
@@ -345,12 +360,12 @@ void readPumpMenuScreen(int x, int y){
 			pressButton(10, 40, 60, 90);
 			choosenMenu = PUMP_PRE_CALIBRATE_A;
 		}
-		if ((x>=70) && (x<=120))  // Button: PA Fill
+		else if ((x>=70) && (x<=120))  // Button: PA Fill
 		{
 			pressButton(70, 40, 120, 90);
 			choosenMenu = PUMP_PIPES_FILL_A;
 		}
-		if ((x>=130) && (x<=180))  // Button: PA Set Dose
+		else if ((x>=130) && (x<=180))  // Button: PA Set Dose
 		{
 			pressButton(130, 40, 180, 90);
 			choosenMenu = NUM_KEY_PUMP_SET_DOSE_A;
@@ -363,45 +378,22 @@ void readPumpMenuScreen(int x, int y){
 			pressButton(10, 100, 60, 150);
 			choosenMenu = PUMP_PRE_CALIBRATE_B;
 		}
-		if ((x>=70) && (x<=120))  // Button: PB Fill
+		else if ((x>=70) && (x<=120))  // Button: PB Fill
 		{
 			pressButton(70, 100, 120, 150);
 			choosenMenu = PUMP_PIPES_FILL_B;
 		}
-		if ((x>=130) && (x<=180))  // Button: PB Set Dose
+		else if ((x>=130) && (x<=180))  // Button: PB Set Dose
 		{
 			pressButton(130, 100, 180, 150);
 			choosenMenu = NUM_KEY_PUMP_SET_DOSE_B;
 		}
-		if ((x>=190) && (x<=240))  // Button: PB Set Delay
+		else if ((x>=190) && (x<=240))  // Button: PB Set Delay
 		{
 			pressButton(190, 100, 240, 150);
 			choosenMenu = NUM_KEY_PUMP_SET_DELAY_B;
 		}
 	}
-	/*if ((y>=160) && (y<=210)) //Pump C row INACTIVE DUE TO PUMP UNAVAILABILITY
-	{
-	if ((x>=10) && (x<=60))  // Button: PC Calibrate
-	{
-	pressButton(10, 160, 60, 210);
-	choosenMenu = PUMP_PRE_CALIBRATE_B;
-	}
-	if ((x>=70) && (x<=120))  // Button: PC Fill
-	{
-	pressButton(70, 160, 120, 210);
-	choosenMenu = PUMP_PIPES_FILL_C;
-	}
-	if ((x>=130) && (x<=180))  // Button: PC Set Dose
-	{
-	pressButton(130, 160, 180, 210);
-	choosenMenu = NUM_KEY_PUMP_SET_DOSE_C;
-	}
-	if ((x>=190) && (x<=240))  // Button: PC Set Delay
-	{
-	pressButton(190, 160, 240, 210);
-	choosenMenu = NUM_KEY_PUMP_SET_DELAY_C;
-	}
-	}*/
 	if ((x>=260) && (x<=310))
 	{
 		if ((y>=40) && (x<=100))  // Button: BACK TO MAIN menu

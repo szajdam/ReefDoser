@@ -614,7 +614,7 @@ void chooseAction() {
 		else if(currentMenu == PUMP_PRE_CALIBRATE_A && currentMenu <= PUMP_PRE_CALIBRATE_C){
 		chooseActionPumpsCalibration(x, y);
 		}
-		else if(currentMenu == TIME_SET_MENU_SCREEN){
+		else if(currentMenu == MAIN_MENU_SCREEN && choosenMenu == TIME_SET_MENU_SCREEN){
 		chooseActionTimeSet(x, y);
 		}
 		else if(currentMenu == DATE_SET_MENU_SCREEN){

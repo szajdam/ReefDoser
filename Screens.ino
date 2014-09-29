@@ -57,6 +57,7 @@ int pumpACurrentState = 0;
 int pumpBCurrentState = 0;
 int pumpCCurrentState = 0;
 
+unsigned long lastTouchMillis = 0;
 
 extern uint8_t BigFont[]; //16x16
 extern uint8_t SmallFont[]; //SmallFont[] 8x12
@@ -112,12 +113,12 @@ void updatePumpsStatus() {
 	updatePumpStatus(5, 135, 40, 170, pumpC.getNextDosingTimeStr(), pumpC.getRemainingDose());
 }
 //layout
-// void lcdOn(){
-// 	lcd.lcdOn();	
-// }
-//  void lcdOff(){
-//  	lcd.lcdOff();
-//  }
+ void lcdOn(){
+	 lcd.lcdOn();
+ }
+ void lcdOff(){
+	 lcd.lcdOff();
+ }
 void scrInit() {
 	
 	lcd.InitLCD();
@@ -145,6 +146,7 @@ void scrInit() {
 	pumpB.init(pumpA);
 	pumpC.init(pumpB);
 	
+	lastTouchMillis = millis();
 
 }
 void drawButton(int x1, int y1, int x2, int y2){
@@ -597,11 +599,16 @@ void chooseAction() {
 	menus = menus + ", pbs:";
 	menus = menus + String(pumpB.getState());
  	drawLog(menus);
+	 if ((millis() - lastTouchMillis) > 60000L) {
+		lcdOff();
+	 }
 	if (touch.dataAvailable())
 	{
+		lcdOn();
 		touch.read();
 		x=touch.getX();
 		y=touch.getY();
+		lastTouchMillis = millis();
 		if (currentMenu == MAIN_SCREEN){
 		chooseActionMain(x, y);
 		}

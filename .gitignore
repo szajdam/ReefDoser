@@ -66,8 +66,6 @@ Release/
 *.msp
 *.elf
 *.atsuo
-Visual Micro/.ReefDoser.vsarduino.h
-Visual Micro/Compile.vmps.xml
-Visual Micro/Configuration.Debug.vmps.xml
-Visual Micro/Configuration.Release.vmps.xml
 *.elf
+*.cppproj
+

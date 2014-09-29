@@ -72,3 +72,5 @@ String to2Digits(String number);
 #include "D:\Private\Projekty\ReefDoser\ThermoMeter.cpp"
 #include "D:\Private\Projekty\ReefDoser\ThermoMeter.h"
 #include "D:\Private\Projekty\ReefDoser\TimeUtils.ino"
+#include "D:\Private\Projekty\ReefDoser\UTFT_ext.cpp"
+#include "D:\Private\Projekty\ReefDoser\UTFT_ext.h"

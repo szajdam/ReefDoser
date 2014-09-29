@@ -46,7 +46,7 @@ int choosenMenu = -1;
 int numKeyResult = -1;
 String numKeyResultStr = "";
 
-UTFT    lcd(ITDB32S,38,39,40,41);
+UTFT_ext   lcd(ITDB32S,38,39,40,41);
 UTouch  touch( 6, 5, 4, 3, 2);
 
 Pump pumpA;

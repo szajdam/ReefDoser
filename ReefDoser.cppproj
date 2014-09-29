@@ -584,6 +584,12 @@ vm.runtime.compiler.showwarnings=false
     <Compile Include="ThermoMeter.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="UTFT_ext.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UTFT_ext.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Visual Micro\.ReefDoser.vsarduino.h">
       <SubType>compile</SubType>
     </Compile>

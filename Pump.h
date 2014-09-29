@@ -49,6 +49,7 @@
 #define TIMEOUT_PIPES_FILL					(long)20000
 
 #define TIME_AN_HOUR						(long)60*60*1000 //an Hour
+#define MINUTES_IN_HOUR						(unsigned int)60 //an Hour
 
 #define DAILY_DOSES							8
 #define DAILY_DOSES_DELAY					(long)60*60*1000 //an Hour delay between particular doses

@@ -55,6 +55,9 @@ Desktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+Visual Micro/
+Debug/
+Release/
 
 # Windows Installer files
 *.cab

@@ -64,7 +64,7 @@ void Pump::initEEPROM() {
 	EEPROMWriteInt(EepromAddrDailyDose, DailyDose);
 	EEPROMWriteInt(EepromAddrHH, 0);
 	EEPROMWriteInt(EepromAddrMM, 0);
-	EEPROMWriteInt(EepromAddrLastDoseDay, 0);
+	EEPROMWriteInt(EepromAddrLastDoseDay, CurrentTime->Day);
 	if(EepromAddrPumpDelay > 0){
 		EEPROMWriteInt(EepromAddrPumpDelay, 15);
 	}
@@ -88,14 +88,12 @@ void Pump::init(){
 	LastDosingTime.Hour = EEPROMReadInt(EepromAddrHH);
 	LastDosingTime.Minute = EEPROMReadInt(EepromAddrMM);
 	
+	defineDailyDosing(RemainingDailyDose);
+	
 	//next dosing - last dosing a day ago (doser switched off for a day)
-	if(LastDosingTime.Day< CurrentTime->Day) {
-		advanceDay();
-	}
-	//last dosing at the same day - remainder to be dosed
-	else if(LastDosingTime.Day == CurrentTime->Day) {
+	if(!advanceDay()) {
 		unsigned int delayHH = (DAILY_DOSES_DELAY) / (TIME_AN_HOUR);
-		unsigned int delayMM = (DAILY_DOSES_DELAY) % (TIME_AN_HOUR);
+		//unsigned int delayMM = (DAILY_DOSES_DELAY) % (TIME_AN_HOUR);
 		unsigned int pumpDelayMM = 0;
 		if(DependentToPump != NULL && LastDosingTime.Minute < (DependentToPump->LastDosingTime.Minute + PumpDelay)) {
 			pumpDelayMM = PumpDelay;
@@ -109,15 +107,31 @@ void Pump::init(){
 			NextDosingTime.Hour = (LastDosingTime.Hour + delayHH + ((LastDosingTime.Minute + delayMM + pumpDelayMM) / (MINUTES_IN_HOUR)));
 			NextDosingTime.Minute = ((LastDosingTime.Minute + delayMM + pumpDelayMM) % (MINUTES_IN_HOUR));
 		}
-		
 	}
-
+	
+	
+	
 	changeState(STATE_INITIALIZED);
 }
 void Pump::init(Pump &dependentPump){
 	DependentToPump = &dependentPump;
 	init();
 }
+void Pump::addDependentPump(Pump &dependentPump){
+	DependentToPump = &dependentPump;
+}
+
+void Pump::defineDailyDosing(int dailyDose) {
+	if(CurrentTime->Hour < DAILY_DOSES_END_HOUR) {
+		DailyDosesNo =  max(DAILY_DOSES_MIN_DOSE, dailyDose/(DAILY_DOSES_END_HOUR - max(DAILY_DOSES_START_HOUR, CurrentTime->Hour)));
+		DailyDoseDelay = max(DAILY_DOSES_MIN_DELAY, ((DailyDosesNo/(DAILY_DOSES_END_HOUR - max(DAILY_DOSES_START_HOUR, CurrentTime->Hour)))));
+	}
+	else {
+		DailyDosesNo = 2;
+		DailyDoseDelay = DAILY_DOSES_MIN_DELAY;
+	}
+}
+
 int Pump::getIndex() {
 	return PumpIndex;
 }
@@ -167,7 +181,7 @@ void Pump::fillPipes() {
 	changeState(STATE_IDLE);
 }
 int Pump::dose(){
-	advanceDay();
+	if(CurrentTime->Hour >= DAILY_DOSES_RESET_HOUR) {advanceDay();}
 	//start dosing
 	if(checkDosingStart()) {
 		doseStart();
@@ -268,19 +282,19 @@ void Pump::stopPump() {
 	digitalWrite(PumpIn2, LOW);
 	digitalWrite(PumpEn, LOW);
 }
-void Pump::advanceDay() {
-	if(NextDosingTime.Day < CurrentTime->Day
-			&& LastDosingTime.Day < CurrentTime->Day 
-			&& CurrentTime->Hour >= DAILY_DOSES_RESET_HOUR) {
+boolean Pump::advanceDay() {
+	if(LastDosingTime.Day < CurrentTime->Day ) {
 		
 		RemainingDailyDose = (RemainingDailyDose + DailyDose);
 		EEPROMWriteInt(EepromAddrRemainDose, RemainingDailyDose);
 		
+		defineDailyDosing(RemainingDailyDose);
+		
 		NextDosingTime.Day = CurrentTime->Day; //current day
 		
-		unsigned int nextDosingHH = (CurrentTime->Hour >= DAILY_DOSES_START_HOUR ? CurrentTime->Hour : DAILY_DOSES_START_HOUR);
+		unsigned int nextDosingHH = max(CurrentTime->Hour, DAILY_DOSES_START_HOUR);
 		unsigned int nextDosingMM = (CurrentTime->Hour >= DAILY_DOSES_START_HOUR ?
-		CurrentTime->Minute + PumpDelay + 1 :
+		(CurrentTime->Minute + PumpDelay + 1) :
 		PumpDelay);
 		
 		if(nextDosingMM < MINUTES_IN_HOUR) {
@@ -288,10 +302,13 @@ void Pump::advanceDay() {
 			NextDosingTime.Minute = nextDosingMM;	
 		}
 		else {
-			NextDosingTime.Hour = nextDosingHH + (nextDosingMM / MINUTES_IN_HOUR);
+			NextDosingTime.Hour = (nextDosingHH + floor(nextDosingMM / MINUTES_IN_HOUR));
 			NextDosingTime.Minute = (nextDosingMM % MINUTES_IN_HOUR);	
 		}
-		
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 int Pump::getRemainingDose() {
@@ -300,6 +317,8 @@ int Pump::getRemainingDose() {
 doseTime_t Pump::getNextDosingTime() {
 	return NextDosingTime;
 }
+
+
 String Pump::getNextDosingTimeStr() {
 	String timeStr = to2Digits(String((int) NextDosingTime.Hour));
 	timeStr = timeStr + ":";

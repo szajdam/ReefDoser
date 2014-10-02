@@ -8,6 +8,8 @@
 
 #define DATE_SET_MENU_SCREEN		30
 
+#define DEFAULTS_MENU_SCREEN		40
+
 #define PUMP_PRE_CALIBRATE_A 		111
 #define PUMP_PRE_CALIBRATE_B 		112
 #define PUMP_PRE_CALIBRATE_C 		113
@@ -137,14 +139,10 @@ void scrInit() {
 	pumpB = Pump(INDEX_PUMP_B, currentTime);
 	pumpC = Pump(INDEX_PUMP_C, currentTime);
 	
-	if(false){
-		pumpA.initEEPROM();
-		pumpB.initEEPROM();
-		pumpC.initEEPROM();
-	}
 	pumpA.init();
 	pumpB.init(pumpA);
 	pumpC.init(pumpB);
+	pumpA.addDependentPump(pumpC);
 	
 	lastTouchMillis = millis();
 
@@ -304,6 +302,7 @@ void drawMainMenuScreen(float temp, String time, String date) {
 	drawButtonWLabel(10, 40, 60, 90, "Pumps", 1);
 	drawButtonWLabel(70, 40, 120, 90, "Time", 1);
 	drawButtonWLabel(130, 40, 180, 90, "Date", 1);
+	drawButtonWLabel(10, 100, 60, 150, "Defaults", 1);
 	drawButtonWLabel(260, 40, 310, 100, "Exit", 1);
 	drawMillis(millis());
 }
@@ -326,6 +325,14 @@ void readMainMenuScreen(int x, int y){
 			choosenMenu = DATE_SET_MENU_SCREEN;
 		}
 	}
+	if(y>=90 && y<=150) {
+		if ((x>=10) && (x<=60))  // Button: Reset to defaults
+		{
+			pressButton(10, 90, 60, 150);
+			
+			choosenMenu = DEFAULTS_MENU_SCREEN;
+		}	
+	}
 	if ((y>=40) && (y<=100))
 	{
 		if ((x>=260) && (x<=310))  // Button: Exit menu
@@ -334,6 +341,15 @@ void readMainMenuScreen(int x, int y){
 			choosenMenu = MAIN_SCREEN;
 		}
 	}
+}
+
+void setDefaults() {
+	pumpA.initEEPROM();
+	pumpA.init();
+	pumpB.initEEPROM();
+	pumpB.init();
+	pumpC.initEEPROM();
+	pumpC.init();
 }
 void drawPumpsMenuScreen(float temp, String time, String date) {
 	lcd.clrScr();

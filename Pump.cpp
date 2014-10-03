@@ -64,11 +64,11 @@ void Pump::initEEPROM() {
 	EEPROMWriteInt(EepromAddrDailyDose, DailyDose);
 	EEPROMWriteInt(EepromAddrHH, 0);
 	EEPROMWriteInt(EepromAddrMM, 0);
-	EEPROMWriteInt(EepromAddrLastDoseDay, CurrentTime->Day);
+	EEPROMWriteInt(EepromAddrLastDoseDay, CurrentTime->Day - 1);
 	if(EepromAddrPumpDelay > 0){
 		EEPROMWriteInt(EepromAddrPumpDelay, 15);
 	}
-	EEPROMWriteInt(EepromAddrRemainDose, DailyDose);
+	EEPROMWriteInt(EepromAddrRemainDose, 0);
 	EEPROMWriteInt(EepromAddrPumpPerf, 1000);
 	
 }
@@ -88,24 +88,31 @@ void Pump::init(){
 	LastDosingTime.Hour = EEPROMReadInt(EepromAddrHH);
 	LastDosingTime.Minute = EEPROMReadInt(EepromAddrMM);
 	
-	defineDailyDosing(RemainingDailyDose);
 	
-	//next dosing - last dosing a day ago (doser switched off for a day)
+	
 	if(!advanceDay()) {
-		unsigned int delayHH = (DAILY_DOSES_DELAY) / (TIME_AN_HOUR);
-		//unsigned int delayMM = (DAILY_DOSES_DELAY) % (TIME_AN_HOUR);
-		unsigned int pumpDelayMM = 0;
-		if(DependentToPump != NULL && LastDosingTime.Minute < (DependentToPump->LastDosingTime.Minute + PumpDelay)) {
-			pumpDelayMM = PumpDelay;
-		}
-		NextDosingTime.Day = LastDosingTime.Day;
-		if (LastDosingTime.Minute + delayMM + pumpDelayMM < MINUTES_IN_HOUR) { //within an hour
-			NextDosingTime.Hour = LastDosingTime.Hour + delayHH;
-			NextDosingTime.Minute = LastDosingTime.Minute + delayMM + pumpDelayMM;
-		}
-		else {
-			NextDosingTime.Hour = (LastDosingTime.Hour + delayHH + ((LastDosingTime.Minute + delayMM + pumpDelayMM) / (MINUTES_IN_HOUR)));
-			NextDosingTime.Minute = ((LastDosingTime.Minute + delayMM + pumpDelayMM) % (MINUTES_IN_HOUR));
+		if(RemainingDailyDose > 0) { //nothing to dose?
+			defineDailyDosing(RemainingDailyDose);
+
+			unsigned int delayHH = floor((float)DailyDoseDelay / TIME_AN_HOUR);
+			unsigned int delayMM = (DailyDoseDelay % TIME_AN_HOUR);
+			unsigned int pumpDelayMM = 0;
+			//IF((HOUR(I3)+ROUND($F8/1;0))>HOUR(J2);IF(MINUTE(J2)+$E$4<60;0;(MINUTE(I3)+ROUND(60*MOD($F8;1);0))+$E$4+MINUTE(J2)-60);MINUTE(J2)+$E$4)
+			if(LastDosingTime.Hour + round(DailyDoseDelay/MINUTES_IN_HOUR) > DependentToPump->NextDosingTime.Hour) {
+				if(DependentToPump->NextDosingTime)
+			}
+			if(DependentToPump != NULL && LastDosingTime.Minute < (DependentToPump->LastDosingTime.Minute + PumpDelay)) {
+				pumpDelayMM = PumpDelay;
+			}
+			NextDosingTime.Day = LastDosingTime.Day;
+			if (LastDosingTime.Minute + delayMM + pumpDelayMM < MINUTES_IN_HOUR) { //within an hour
+				NextDosingTime.Hour = LastDosingTime.Hour + delayHH;
+				NextDosingTime.Minute = LastDosingTime.Minute + delayMM + pumpDelayMM;
+			}
+			else {
+				NextDosingTime.Hour = (LastDosingTime.Hour + delayHH + ((LastDosingTime.Minute + delayMM + pumpDelayMM) / (MINUTES_IN_HOUR)));
+				NextDosingTime.Minute = ((LastDosingTime.Minute + delayMM + pumpDelayMM) % (MINUTES_IN_HOUR));
+			}
 		}
 	}
 	
@@ -124,7 +131,7 @@ void Pump::addDependentPump(Pump &dependentPump){
 void Pump::defineDailyDosing(int dailyDose) {
 	if(CurrentTime->Hour < DAILY_DOSES_END_HOUR) {
 		DailyDosesNo =  max(DAILY_DOSES_MIN_DOSE, dailyDose/(DAILY_DOSES_END_HOUR - max(DAILY_DOSES_START_HOUR, CurrentTime->Hour)));
-		DailyDoseDelay = max(DAILY_DOSES_MIN_DELAY, ((DailyDosesNo/(DAILY_DOSES_END_HOUR - max(DAILY_DOSES_START_HOUR, CurrentTime->Hour)))));
+		DailyDoseDelay = max(DAILY_DOSES_MIN_DELAY, (round((((float)DAILY_DOSES_END_HOUR - max(DAILY_DOSES_START_HOUR, CurrentTime->Hour))/DailyDosesNo)*60)));
 	}
 	else {
 		DailyDosesNo = 2;
@@ -291,18 +298,26 @@ boolean Pump::advanceDay() {
 		defineDailyDosing(RemainingDailyDose);
 		
 		NextDosingTime.Day = CurrentTime->Day; //current day
+		unsigned int nextDosingHH = 0;
+		unsigned int nextDosingMM = 0;
 		
-		unsigned int nextDosingHH = max(CurrentTime->Hour, DAILY_DOSES_START_HOUR);
-		unsigned int nextDosingMM = (CurrentTime->Hour >= DAILY_DOSES_START_HOUR ?
-		(CurrentTime->Minute + PumpDelay + 1) :
-		PumpDelay);
-		
+		if(DependentToPump == NULL || (DependentToPump->LastDosingTime.Day < CurrentTime->Day)) {
+			nextDosingHH = max(CurrentTime->Hour, DAILY_DOSES_START_HOUR);
+			nextDosingMM = (CurrentTime->Hour >= DAILY_DOSES_START_HOUR ?
+			(CurrentTime->Minute + 1) :
+			0);
+		}
+		else {
+			nextDosingHH = DependentToPump->NextDosingTime.Hour;
+			nextDosingMM = DependentToPump->NextDosingTime.Minute + PumpDelay;
+			
+		}
 		if(nextDosingMM < MINUTES_IN_HOUR) {
 			NextDosingTime.Hour = nextDosingHH;
 			NextDosingTime.Minute = nextDosingMM;	
 		}
 		else {
-			NextDosingTime.Hour = (nextDosingHH + floor(nextDosingMM / MINUTES_IN_HOUR));
+			NextDosingTime.Hour = (nextDosingHH + floor((float)nextDosingMM / MINUTES_IN_HOUR));
 			NextDosingTime.Minute = (nextDosingMM % MINUTES_IN_HOUR);	
 		}
 		return true;

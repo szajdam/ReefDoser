@@ -154,6 +154,9 @@ class Pump
 	boolean checkDosingStart();
 	void doseStart();
 	
+	boolean advanceDay();
+	boolean setNextDosingTime();
+	
 	unsigned long checkDosingEnd();
 	void doseEnd(unsigned long);
 	
@@ -180,8 +183,6 @@ class Pump
 	void fillPipes();
 	void setDailyDose(int);
 	int dose();
-	
-	boolean advanceDay();
 	
 	void initEEPROM() ;
 };

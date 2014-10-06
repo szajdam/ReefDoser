@@ -51,10 +51,12 @@
 #define TIME_AN_HOUR						(long)60*60*1000 //an Hour
 #define MINUTES_IN_HOUR						(unsigned int)60 //an Hour
 
-#define DAILY_DOSES							8
-#define DAILY_DOSES_DELAY					(long)60*60*1000 //an Hour delay between particular doses
-#define DAILY_DOSES_RESET_HOUR				0
-#define DAILY_DOSES_START_HOUR				8
+#define DAILY_DOSES							12
+#define DAILY_DOSES_MIN_DELAY				60 //an Hour delay (in minutes)
+#define DAILY_DOSES_MIN_DOSE				2 //2 mililiters as minimal dose (in minutes)
+#define DAILY_DOSES_RESET_HOUR				1
+#define DAILY_DOSES_START_HOUR				7
+#define DAILY_DOSES_END_HOUR				20
 
 
 #define DAILY_DOSE_DEFAULT_PA 				112 //ALK
@@ -129,25 +131,31 @@ class Pump
 	doseTime_t LastDosingTime;
 	doseTime_t NextDosingTime;
 	unsigned int RemainingDailyDose; //ml
-	//unsigned int RemainingDailyDosesNo; //times
-	unsigned int PumpDelay; //minutes;
+	unsigned int DailyDosesNo; //times
+	unsigned int DailyDoseDelay; //minutes between dosages
+	unsigned int PumpDelay; //minutes between pumps;
 	
 	Pump *DependentToPump;
 	tmElements_t *CurrentTime;
 	
 	//dosing definition
 	int DailyDose;
-	unsigned long PumpPerf;
+	unsigned long PumpPerf; //ml * 1000ms
 	
 	//methods
 	void EEPROMWriteInt(int, int);
 	unsigned int EEPROMReadInt(int);
+	
+	void defineDailyDosing(int);
 	
 	void stopPump();
 	void startPump();
 	void changeState(int state);
 	boolean checkDosingStart();
 	void doseStart();
+	
+	boolean advanceDay();
+	boolean setNextDosingTime();
 	
 	unsigned long checkDosingEnd();
 	void doseEnd(unsigned long);
@@ -159,6 +167,7 @@ class Pump
 	Pump(int, tmElements_t&);
 	void init();
 	void init(Pump&);
+	void addDependentPump(Pump&);
 	
 	int getIndex();
 	String getLabel();
@@ -174,8 +183,6 @@ class Pump
 	void fillPipes();
 	void setDailyDose(int);
 	int dose();
-	
-	void advanceDay();
 	
 	void initEEPROM() ;
 };

@@ -303,7 +303,7 @@ boolean Pump::setNextDosingTime() {
 	unsigned int nextDoseMM = LastDosingTime.Minute;
 	
 	//calculate dosing delay
-	if(nextDoseMM + DailyDoseDelay => MINUTES_IN_HOUR) {
+	if((nextDoseMM + DailyDoseDelay) >= MINUTES_IN_HOUR) {
 		nextDoseHH = nextDoseHH + floor((float)(nextDoseMM + DailyDoseDelay) / MINUTES_IN_HOUR);
 		nextDoseMM = ((nextDoseMM + DailyDoseDelay) % MINUTES_IN_HOUR);
 	}
@@ -317,7 +317,7 @@ boolean Pump::setNextDosingTime() {
 	
 	//calculate pump dependency delay
 	if(nextDoseHH > depNextDosingHH){
-		unsigned int tempNextDoseMM = nextDoseMM + max(PumpDelay - (MINUTES_IN_HOUR - depNextDosingMM + nextDoseMM), 0)
+		unsigned int tempNextDoseMM = nextDoseMM + max(PumpDelay - (MINUTES_IN_HOUR - depNextDosingMM + nextDoseMM), 0);
 		if(tempNextDoseMM >= MINUTES_IN_HOUR) {
 			nextDoseHH = nextDoseHH + floor((float)tempNextDoseMM / MINUTES_IN_HOUR);
 			nextDoseMM = (tempNextDoseMM % MINUTES_IN_HOUR);
@@ -357,6 +357,7 @@ boolean Pump::setNextDosingTime() {
 	NextDosingTime.Hour = nextDoseHH;
 	NextDosingTime.Minute = nextDoseMM;
 	
+	return true;
 }
 
 int Pump::getRemainingDose() {

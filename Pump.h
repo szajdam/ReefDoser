@@ -167,7 +167,7 @@ class Pump
 	Pump(int, tmElements_t&);
 	void init();
 	void init(Pump&);
-	void AddDependentPump(Pump&);
+	void addDependentPump(Pump&);
 	
 	int getIndex();
 	String getLabel();

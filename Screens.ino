@@ -117,10 +117,10 @@ void updatePumpsStatus() {
 }
 //layout
  void lcdOn(){
-	 lcd.lcdOn();
+	 //lcd.lcdOn();
  }
  void lcdOff(){
-	 lcd.lcdOff();
+	 //lcd.lcdOff();
  }
 void scrInit() {
 	

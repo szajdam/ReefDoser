@@ -26,8 +26,9 @@
 #define NUM_KEY_PUMP_SET_DOSE_B 	142
 #define NUM_KEY_PUMP_SET_DOSE_C 	143
 
-#define NUM_KEY_PUMP_SET_DELAY_B 	152
-#define NUM_KEY_PUMP_SET_DELAY_C 	153
+#define NUM_KEY_PUMP_TRIG_DOSE_A 	151
+#define NUM_KEY_PUMP_TRIG_DOSE_B 	152
+#define NUM_KEY_PUMP_TRIG_DOSE_C 	153
 
 #define NUM_KEY_TIME_SET_HOURS		211
 #define NUM_KEY_TIME_SET_MINUTES	212
@@ -75,7 +76,7 @@ Pump* getPumpCRef() {
 }
 void dose() {
 	int pumpState = 0;
-	pumpState = pumpA.dose();
+	pumpState = pumpA.scheduledDose();
 	if (pumpState != pumpACurrentState) {
 		if(pumpState == 3) {
 			updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 255, 0);
@@ -86,7 +87,7 @@ void dose() {
 		pumpACurrentState = pumpState;
 	}
 	
-	pumpState = pumpB.dose();
+	pumpState = pumpB.scheduledDose();
 	if (pumpState != pumpBCurrentState) {
 		if(pumpState == 3) {
 			updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 255, 0);
@@ -97,7 +98,7 @@ void dose() {
 		pumpBCurrentState = pumpState;
 	}
 	
-	pumpState = pumpC.dose();
+	pumpState = pumpC.scheduledDose();
 	if (pumpState != pumpCCurrentState) {
 		if(pumpState == 3) {
 			updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 255, 0);
@@ -325,10 +326,10 @@ void readMainMenuScreen(int x, int y){
 			choosenMenu = DATE_SET_MENU_SCREEN;
 		}
 	}
-	if(y>=90 && y<=150) {
+	if(y>=100 && y<=150) {
 		if ((x>=10) && (x<=60))  // Button: Reset to defaults
 		{
-			pressButton(10, 90, 60, 150);
+			pressButton(10, 100, 60, 150);
 			
 			choosenMenu = DEFAULTS_MENU_SCREEN;
 		}	
@@ -359,12 +360,18 @@ void drawPumpsMenuScreen(float temp, String time, String date) {
 	drawBar(temp, time, date);
 	drawButtonWLabel(10, 40, 60, 90, "A Cal",1);
 	drawButtonWLabel(70, 40, 120, 90, "A Fill",1);
-	drawButtonWLabel(130, 40, 180, 90, "A Dose",1);
+	drawButtonWLabel(130, 40, 180, 90, "A SetDose",1);
+	drawButtonWLabel(190, 40, 240, 90, "A Dose",1);
 	
 	drawButtonWLabel(10, 100, 60, 150, "B Cal",1);
 	drawButtonWLabel(70, 100, 120, 150, "B Fill",1);
-	drawButtonWLabel(130, 100, 180, 150, "B Dose",1);
-	drawButtonWLabel(190, 100, 240, 150, "B Delay",1);
+	drawButtonWLabel(130, 100, 180, 150, "B SetDose",1);
+	drawButtonWLabel(190, 100, 240, 150, "B Dose",1);
+	
+	drawButtonWLabel(10, 160, 60, 210, "C Cal",1);
+	drawButtonWLabel(70, 160, 120, 210, "C Fill",1);
+	drawButtonWLabel(130, 160, 180, 210, "C SetDose",1);
+	drawButtonWLabel(190, 160, 240, 210, "C Dose",1);
 	
 	drawButtonWLabel(260, 40, 310, 100, "Back",1);
 	drawButtonWLabel(260, 140, 310, 210, "Exit",1);
@@ -388,6 +395,11 @@ void readPumpMenuScreen(int x, int y){
 			pressButton(130, 40, 180, 90);
 			choosenMenu = NUM_KEY_PUMP_SET_DOSE_A;
 		}
+		else if ((x>=190) && (x<=240))  // Button: PB Dose!
+		{
+			pressButton(190, 40, 240, 90);
+			choosenMenu = NUM_KEY_PUMP_TRIG_DOSE_A;
+		}
 	}
 	else if ((y>=100) && (y<=150)) //Pump B row
 	{
@@ -406,10 +418,33 @@ void readPumpMenuScreen(int x, int y){
 			pressButton(130, 100, 180, 150);
 			choosenMenu = NUM_KEY_PUMP_SET_DOSE_B;
 		}
-		else if ((x>=190) && (x<=240))  // Button: PB Set Delay
+		else if ((x>=190) && (x<=240))  // Button: PB Dose!
 		{
 			pressButton(190, 100, 240, 150);
-			choosenMenu = NUM_KEY_PUMP_SET_DELAY_B;
+			choosenMenu = NUM_KEY_PUMP_TRIG_DOSE_B;
+		}
+	}
+	else if ((y>=160) && (y<=210)) //Pump C row
+	{
+		if ((x>=10) && (x<=60))  // Button: PC Calibrate
+		{
+			pressButton(10, 160, 60, 210);
+			choosenMenu = PUMP_PRE_CALIBRATE_C;
+		}
+		else if ((x>=70) && (x<=120))  // Button: PC Fill
+		{
+			pressButton(70, 160, 120, 210);
+			choosenMenu = PUMP_PIPES_FILL_C;
+		}
+		else if ((x>=130) && (x<=180))  // Button: PC Set Dose
+		{
+			pressButton(130, 160, 180, 210);
+			choosenMenu = NUM_KEY_PUMP_SET_DOSE_C;
+		}
+		else if ((x>=190) && (x<=240))  // Button: PC Dose!
+		{
+			pressButton(190, 160, 240, 210);
+			choosenMenu = NUM_KEY_PUMP_TRIG_DOSE_C;
 		}
 	}
 	if ((x>=260) && (x<=310))
@@ -742,6 +777,7 @@ void chooseActionPumpMenu(int x, int y) {
 			choosenMenu = PUMPS_MENU_SCREEN;
 			currentMenu = choosenMenu;
 		}
+		
 		//dosage setup
 		else if (choosenMenu == NUM_KEY_PUMP_SET_DOSE_A){
 			previousMenu = currentMenu;
@@ -758,20 +794,52 @@ void chooseActionPumpMenu(int x, int y) {
 			drawNumKeyScreen("Set dose for Pump C (ml)");
 			currentMenu = NUM_KEY_PUMP_SET_DOSE_C;
 		}
-		//pumps delay setup
-		else if (choosenMenu == NUM_KEY_PUMP_SET_DELAY_B){
+		
+		//pumps dosage trigger
+		else if (choosenMenu == NUM_KEY_PUMP_TRIG_DOSE_A){
 			previousMenu = currentMenu;
+			currentMenu = NUM_KEY_PUMP_TRIG_DOSE_A;
+			
+			pumpA.triggerDose();
+			
+			previousMenu = currentMenu;
+			choosenMenu = PUMPS_MENU_SCREEN;
+			
+			currentMenu = choosenMenu;	
+		}
+		else if (choosenMenu == NUM_KEY_PUMP_TRIG_DOSE_B){
+			previousMenu = currentMenu;
+			currentMenu = NUM_KEY_PUMP_TRIG_DOSE_A;
+			
+			pumpB.triggerDose();
+			
+			previousMenu = currentMenu;
+			choosenMenu = PUMPS_MENU_SCREEN;
+			
+			currentMenu = choosenMenu;
 			
 		}
-		else if (choosenMenu == NUM_KEY_PUMP_SET_DELAY_C){
+		else if (choosenMenu == NUM_KEY_PUMP_TRIG_DOSE_C){
 			previousMenu = currentMenu;
+			currentMenu = NUM_KEY_PUMP_TRIG_DOSE_A;
+			
+			pumpC.triggerDose();
+			
+			previousMenu = currentMenu;
+			choosenMenu = PUMPS_MENU_SCREEN;
+			
+			currentMenu = choosenMenu;
 			
 		}
+		
+		//main menu
 		else if (choosenMenu == MAIN_MENU_SCREEN){
 			previousMenu = currentMenu;
 			drawMainMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = MAIN_MENU_SCREEN;
 		}
+		
+		//main screen
 		else if (choosenMenu == MAIN_SCREEN){
 			previousMenu = currentMenu;
 			drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());

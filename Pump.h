@@ -34,7 +34,7 @@
 
 #define PUMP_A_LABEL						"Alk"
 #define PUMP_B_LABEL						"Ca"
-#define PUMP_C_LABEL						"NA"
+#define PUMP_C_LABEL						""
 
 #define STATE_UNDEFINED						0
 #define STATE_INITIALIZED					1
@@ -42,6 +42,7 @@
 #define STATE_DOSING						3
 #define STATE_CALIBRATION					4
 #define STATE_PIPES_FILL					5
+#define STATE_DOSING_COMPLETED				6
 
 
 
@@ -53,7 +54,7 @@
 
 #define DAILY_DOSES							12
 #define DAILY_DOSES_MIN_DELAY				60 //an Hour delay (in minutes)
-#define DAILY_DOSES_MIN_DOSE				2 //2 mililiters as minimal dose (in minutes)
+#define DAILY_DOSES_MIN_DOSE				2 //2 milliliters as minimal dose (in minutes)
 #define DAILY_DOSES_RESET_HOUR				1
 #define DAILY_DOSES_START_HOUR				7
 #define DAILY_DOSES_END_HOUR				20
@@ -182,7 +183,8 @@ class Pump
 	void setDosage(int);
 	void fillPipes();
 	void setDailyDose(int);
-	int dose();
+	int scheduledDose();
+	int triggerDose();
 	
 	void initEEPROM() ;
 };

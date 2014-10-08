@@ -718,6 +718,14 @@ void chooseActionMainMenu(int x, int y) {
 			previousMenu = currentMenu;
 			//TODO: no handling
 		}
+		else if(choosenMenu == DEFAULTS_MENU_SCREEN) {
+			previousMenu = currentMenu;
+			currentMenu = choosenMenu;
+			setDefaults();
+			choosenMenu = MAIN_MENU_SCREEN;
+			//TODO: no handling
+			
+		}
 		else if(choosenMenu == MAIN_SCREEN) {
 			previousMenu = currentMenu;
 			drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());

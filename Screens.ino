@@ -375,30 +375,75 @@ void drawListSetupMenuScreen(float temp, String time, String date) {
 	unsigned int fontHeight = lcd.getFontXsize();
 	unsigned int spacing = 6;
 	//pump A
-	String msg = "A LastDoseD: DD, LastDoseT: HH:MM:ss";
+	String msg = "A LastDoseD: ";
+	msg = msg + pumpA.getLastDosingDayStr();
+	msg = msg + " LastDoseT: ";
+	msg = msg + pumpA.getLastDosingTimeStr();
 	lcd.print(msg, LEFT, currentLine);
+	
 	currentLine = currentLine + fontHeight + spacing;
-	msg = "A NextDoseD: DD, NextDoseT: HH:MM:ss";
+	msg = "A NextDoseD: ";
+	msg = msg + pumpA.getNextDosingDayStr();
+	msg = msg + " NextDoseT: ";
+	msg = msg + pumpA.getNextDosingTimeStr();
 	lcd.print(msg, LEFT, currentLine);
+	
 	currentLine = currentLine + fontHeight + spacing;
-	msg = "A DosNo: XX, DosMl: XX, RemDose: XX";
+	msg = "A DosNo: ";
+	msg = msg + pumpA.getDoseNo();
+	msg = msg + " DosMl: ";
+	msg = msg + pumpA.getNextDoseMl();
+	msg = msg + " RemDose: ";
+	msg = msg + pumpA.getRemainingDose();
 	lcd.print(msg, LEFT, currentLine);
 	
 	//pump B	
 	currentLine = currentLine + fontHeight + spacing;
-	lcd.print("B LastDoseD: DD, LastDoseT: HH:MM:ss", LEFT, currentLine);
+	msg = "B LastDoseD: ";
+	msg = msg + pumpB.getLastDosingDayStr();
+	msg = msg + " LastDoseT: ";
+	msg = msg + pumpB.getLastDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
 	currentLine = currentLine + fontHeight + spacing;
-	lcd.print("B NextDoseD: DD, NextDoseT: HH:MM:ss", LEFT, currentLine);
+	msg = "B NextDoseD: ";
+	msg = msg + pumpB.getNextDosingDayStr();
+	msg = msg + " NextDoseT: ";
+	msg = msg + pumpB.getNextDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
 	currentLine = currentLine + fontHeight + spacing;
-	lcd.print("B DosNo: XX, DosMl: XX, RemDose: XX", LEFT, currentLine);
+	msg = "B DosNo: ";
+	msg = msg + pumpB.getDoseNo();
+	msg = msg + " DosMl: ";
+	msg = msg + pumpB.getNextDoseMl();
+	msg = msg + " RemDose: ";
+	msg = msg + pumpB.getRemainingDose();
+	lcd.print(msg, LEFT, currentLine);
 	
 	//pump C
 	currentLine = currentLine + fontHeight + spacing;
-	lcd.print("C LastDoseD: DD, LastDoseT: HH:MM:ss", LEFT, currentLine);
+	msg = "C LastDoseD: ";
+	msg = msg + pumpC.getLastDosingDayStr();
+	msg = msg + " LastDoseT: ";
+	msg = msg + pumpC.getLastDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
 	currentLine = currentLine + fontHeight + spacing;
-	lcd.print("C NextDoseD: DD, NextDoseT: HH:MM:ss", LEFT, currentLine);
+	msg = "C NextDoseD: ";
+	msg = msg + pumpC.getNextDosingDayStr();
+	msg = msg + " NextDoseT: ";
+	msg = msg + pumpC.getNextDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
 	currentLine = currentLine + fontHeight + spacing;
-	lcd.print("C DosNo: XX, DosMl: XX, RemDose: XX", LEFT, currentLine);
+	msg = "C DosNo: ";
+	msg = msg + pumpC.getDoseNo();
+	msg = msg + " DosMl: ";
+	msg = msg + pumpC.getNextDoseMl();
+	msg = msg + " RemDose: ";
+	msg = msg + pumpC.getRemainingDose();
+	lcd.print(msg, LEFT, currentLine);
 
 }
 

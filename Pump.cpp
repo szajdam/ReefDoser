@@ -293,7 +293,7 @@ boolean Pump::advanceDay() {
 			
 		}
 		/*60 minutes handling*/
-		if(nextDosingMM < MINUTES_IN_HOUR) {
+		if(nextDosingMM <= MINUTES_IN_HOUR) {
 			NextDosingTime.Hour = nextDosingHH;
 			NextDosingTime.Minute = nextDosingMM;	
 		}
@@ -301,6 +301,9 @@ boolean Pump::advanceDay() {
 			NextDosingTime.Hour = (nextDosingHH + floor((float)nextDosingMM / MINUTES_IN_HOUR));
 			NextDosingTime.Minute = (nextDosingMM % MINUTES_IN_HOUR);	
 		}
+		
+		LastDosingTime.Day = CurrentTime->Day;
+		
 		return true;
 	}
 	else {

@@ -147,6 +147,10 @@ void scrInit() {
 	pumpC.init(pumpB);
 	pumpA.addDependentPump(pumpC);
 	
+	if(false) {
+		setDefaults();
+	}
+	
 	lastTouchMillis = millis();
 
 }

@@ -293,7 +293,7 @@ boolean Pump::advanceDay() {
 			
 		}
 		/*60 minutes handling*/
-		if(nextDosingMM < MINUTES_IN_HOUR) {
+		if(nextDosingMM <= MINUTES_IN_HOUR) {
 			NextDosingTime.Hour = nextDosingHH;
 			NextDosingTime.Minute = nextDosingMM;	
 		}
@@ -301,6 +301,9 @@ boolean Pump::advanceDay() {
 			NextDosingTime.Hour = (nextDosingHH + floor((float)nextDosingMM / MINUTES_IN_HOUR));
 			NextDosingTime.Minute = (nextDosingMM % MINUTES_IN_HOUR);	
 		}
+		
+		LastDosingTime.Day = CurrentTime->Day;
+		
 		return true;
 	}
 	else {
@@ -377,10 +380,36 @@ boolean Pump::setNextDosingTime() {
 int Pump::getRemainingDose() {
 	return RemainingDailyDose;
 }
+
+int Pump::getDoseNo() {
+	return DailyDosesNo;
+}
+
+int Pump::getNextDoseMl() {
+	return min((unsigned int)round((float)DailyDose / DailyDosesNo), RemainingDailyDose);
+}
+
+String Pump::getLastDosingTimeStr() {
+	String timeStr = to2Digits(String((int) LastDosingTime.Hour));
+	timeStr = timeStr + ":";
+	timeStr = timeStr +  to2Digits(String((int) LastDosingTime.Minute));
+	return timeStr;
+}
+
+String Pump::getLastDosingDayStr() {
+	String timeStr = to2Digits(String((int) LastDosingTime.Day));
+	return timeStr;
+}
+
 String Pump::getNextDosingTimeStr() {
 	String timeStr = to2Digits(String((int) NextDosingTime.Hour));
 	timeStr = timeStr + ":";
-	timeStr = timeStr +  to2Digits(String((int) NextDosingTime.Minute));;
+	timeStr = timeStr +  to2Digits(String((int) NextDosingTime.Minute));
+	return timeStr;
+
+}
+String Pump::getNextDosingDayStr() {
+	String timeStr = to2Digits(String((int) NextDosingTime.Day));
 	return timeStr;
 
 }

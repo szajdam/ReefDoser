@@ -177,7 +177,6 @@ class Pump
 	
 	int getRemainingDose();
 	doseTime_t getNextDosingTime();
-	String getNextDosingTimeStr();
 	void calibrate();
 	void setCalibration(int);
 	void setDosage(int);
@@ -187,6 +186,12 @@ class Pump
 	int triggerDose();
 	
 	void initEEPROM() ;
+	String getLastDosingTimeStr();
+	String getLastDosingDayStr();
+	String getNextDosingTimeStr();
+	String getNextDosingDayStr();
+	int getNextDoseMl();
+	int getDoseNo();
 };
 
 

@@ -10,6 +10,8 @@
 
 #define DEFAULTS_MENU_SCREEN		40
 
+#define LIST_SETUP_MENU_SCREEN		50
+
 #define PUMP_PRE_CALIBRATE_A 		111
 #define PUMP_PRE_CALIBRATE_B 		112
 #define PUMP_PRE_CALIBRATE_C 		113
@@ -258,6 +260,11 @@ void updatePumpPicture(int x1, int y1, int x2, int y2, String labelPump, int col
 		
 	}
 }
+
+void drawMillis(){
+	drawMillis(millis());
+}
+
 void drawMillis(unsigned long currMilis){
 	lcd.setFont(SmallFont);
 	//String millisMsg = String(currMilis);
@@ -282,7 +289,7 @@ void drawMainScreen(float temp, String time, String date) {
 	drawPumpWStatus(5, 85, 40, 120, pumpB.getLabel(), pumpB.getNextDosingTimeStr(), pumpB.getRemainingDose());
 	drawPumpWStatus(5, 135, 40, 170, pumpC.getLabel(), pumpC.getNextDosingTimeStr(), pumpC.getRemainingDose());
 	drawButtonWLabel(240, 60, 310, 110, "Menu");
-	drawMillis(millis());
+	drawMillis();
 }
 void readMainScreen(int x, int y){
 	if ((y>=60) && (y<=110))
@@ -304,8 +311,9 @@ void drawMainMenuScreen(float temp, String time, String date) {
 	drawButtonWLabel(70, 40, 120, 90, "Time", 1);
 	drawButtonWLabel(130, 40, 180, 90, "Date", 1);
 	drawButtonWLabel(10, 100, 60, 150, "Defaults", 1);
+	drawButtonWLabel(70, 100, 120, 150, "List", 1);
 	drawButtonWLabel(260, 40, 310, 100, "Exit", 1);
-	drawMillis(millis());
+	drawMillis();
 }
 void readMainMenuScreen(int x, int y){
 	if ((y>=40) && (y<=90))
@@ -333,12 +341,123 @@ void readMainMenuScreen(int x, int y){
 			
 			choosenMenu = DEFAULTS_MENU_SCREEN;
 		}	
+		else if ((x>=70) && (x<=120))  // Button: List Current Setup
+		{
+			pressButton(70, 100, 120, 150);
+			choosenMenu = LIST_SETUP_MENU_SCREEN;
+		}
 	}
 	if ((y>=40) && (y<=100))
 	{
 		if ((x>=260) && (x<=310))  // Button: Exit menu
 		{
 			pressButton(260, 40, 310, 100);
+			choosenMenu = MAIN_SCREEN;
+		}
+	}
+}
+
+void drawListSetupMenuScreen(float temp, String time, String date) {
+	lcd.clrScr();
+	currentMenu = LIST_SETUP_MENU_SCREEN;
+	drawBar(temp, time, date); //end of top bar is with x=30
+	//buttons
+	drawButtonWLabel(260, 40, 310, 100, "Back",1);
+	drawButtonWLabel(260, 140, 310, 210, "Exit",1);
+	
+	drawMillis(); 	//top of bottom bar is at x=210
+		
+	lcd.setFont(SmallFont); //8x12
+	lcd.setBackColor(0,0,0);
+	lcd.setColor(255, 255, 255);
+	//font h=12, spacing between lines h=6
+	unsigned int currentLine = 31;  //firstLine
+	unsigned int fontHeight = lcd.getFontXsize();
+	unsigned int spacing = 6;
+	//pump A
+	String msg = "A LastDoseD: ";
+	msg = msg + pumpA.getLastDosingDayStr();
+	msg = msg + " LastDoseT: ";
+	msg = msg + pumpA.getLastDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "A NextDoseD: ";
+	msg = msg + pumpA.getNextDosingDayStr();
+	msg = msg + " NextDoseT: ";
+	msg = msg + pumpA.getNextDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "A DosNo: ";
+	msg = msg + pumpA.getDoseNo();
+	msg = msg + " DosMl: ";
+	msg = msg + pumpA.getNextDoseMl();
+	msg = msg + " RemDose: ";
+	msg = msg + pumpA.getRemainingDose();
+	lcd.print(msg, LEFT, currentLine);
+	
+	//pump B	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "B LastDoseD: ";
+	msg = msg + pumpB.getLastDosingDayStr();
+	msg = msg + " LastDoseT: ";
+	msg = msg + pumpB.getLastDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "B NextDoseD: ";
+	msg = msg + pumpB.getNextDosingDayStr();
+	msg = msg + " NextDoseT: ";
+	msg = msg + pumpB.getNextDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "B DosNo: ";
+	msg = msg + pumpB.getDoseNo();
+	msg = msg + " DosMl: ";
+	msg = msg + pumpB.getNextDoseMl();
+	msg = msg + " RemDose: ";
+	msg = msg + pumpB.getRemainingDose();
+	lcd.print(msg, LEFT, currentLine);
+	
+	//pump C
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "C LastDoseD: ";
+	msg = msg + pumpC.getLastDosingDayStr();
+	msg = msg + " LastDoseT: ";
+	msg = msg + pumpC.getLastDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "C NextDoseD: ";
+	msg = msg + pumpC.getNextDosingDayStr();
+	msg = msg + " NextDoseT: ";
+	msg = msg + pumpC.getNextDosingTimeStr();
+	lcd.print(msg, LEFT, currentLine);
+	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "C DosNo: ";
+	msg = msg + pumpC.getDoseNo();
+	msg = msg + " DosMl: ";
+	msg = msg + pumpC.getNextDoseMl();
+	msg = msg + " RemDose: ";
+	msg = msg + pumpC.getRemainingDose();
+	lcd.print(msg, LEFT, currentLine);
+
+}
+
+void readListSetupMenuScreen(int x, int y) {
+	if ((x>=260) && (x<=310))
+	{
+		if ((y>=40) && (y<=100))  // Button: BACK TO MAIN menu
+		{
+			pressButton(260, 40, 310, 100);
+			choosenMenu = MAIN_MENU_SCREEN;
+		}
+		else if ((y>=140) && (y<=210))  // Button: Exit menu
+		{
+			pressButton(260, 140, 310, 210);
 			choosenMenu = MAIN_SCREEN;
 		}
 	}
@@ -352,6 +471,7 @@ void setDefaults() {
 	pumpC.initEEPROM();
 	pumpC.init();
 }
+
 void drawPumpsMenuScreen(float temp, String time, String date) {
 	lcd.clrScr();
 	
@@ -375,7 +495,7 @@ void drawPumpsMenuScreen(float temp, String time, String date) {
 	
 	drawButtonWLabel(260, 40, 310, 100, "Back",1);
 	drawButtonWLabel(260, 140, 310, 210, "Exit",1);
-	drawMillis(millis());
+	drawMillis();
 }
 void readPumpMenuScreen(int x, int y){
 	if ((y>=40) && (y<=90)) //Pump A row
@@ -484,7 +604,7 @@ void drawNumKeyScreen(String label){
 	drawButtonWLabel(10, 170, 150, 220, "CLEAR");
 	drawButtonWLabel(160, 170, 300, 220, "SET");
 	lcd.setBackColor(0, 0, 0);
-	drawMillis(millis());
+	drawMillis();
 	
 }
 void drawNumKeyResult() {
@@ -649,10 +769,13 @@ void chooseAction() {
 	menus = menus + String(pumpA.getState());
 	menus = menus + ", pbs:";
 	menus = menus + String(pumpB.getState());
+	menus = menus + ", pcs:";
+	menus = menus + String(pumpC.getState());
  	drawLog(menus);
-	 if ((millis() - lastTouchMillis) > 60000L) {
+	if ((millis() - lastTouchMillis) > 60000L) {
 		lcdOff();
-	 }
+	}
+	
 	if (touch.dataAvailable())
 	{
 		lcdOn();
@@ -665,6 +788,9 @@ void chooseAction() {
 		}
 		else if(currentMenu == MAIN_MENU_SCREEN) {
 		chooseActionMainMenu(x, y);
+		}
+		else if(currentMenu == LIST_SETUP_MENU_SCREEN) {
+		chooseActionListSetup(x, y);
 		}
 		else if(currentMenu == PUMPS_MENU_SCREEN){
 		chooseActionPumpMenu(x, y);
@@ -711,20 +837,24 @@ void chooseActionMainMenu(int x, int y) {
 		}
 		else if(choosenMenu == TIME_SET_MENU_SCREEN) {
 			previousMenu = currentMenu;
-			//TODO: no handling
-			
+			//TODO: no handling	
 		}
 		else if(choosenMenu == DATE_SET_MENU_SCREEN) {
 			previousMenu = currentMenu;
 			//TODO: no handling
 		}
+
 		else if(choosenMenu == DEFAULTS_MENU_SCREEN) {
 			previousMenu = currentMenu;
 			currentMenu = choosenMenu;
 			setDefaults();
 			choosenMenu = MAIN_MENU_SCREEN;
 			//TODO: no handling
-			
+		}
+		else if(choosenMenu == LIST_SETUP_MENU_SCREEN) {
+			previousMenu = currentMenu;
+			drawListSetupMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			currentMenu = LIST_SETUP_MENU_SCREEN;
 		}
 		else if(choosenMenu == MAIN_SCREEN) {
 			previousMenu = currentMenu;
@@ -733,6 +863,22 @@ void chooseActionMainMenu(int x, int y) {
 		}
 	}
 	
+}
+
+void chooseActionListSetup(int x, int y) {
+	//main menu
+	if (choosenMenu == MAIN_MENU_SCREEN){
+		previousMenu = currentMenu;
+		drawMainMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+		currentMenu = MAIN_MENU_SCREEN;
+	}
+
+	//main screen
+	else if (choosenMenu == MAIN_SCREEN){
+		previousMenu = currentMenu;
+		drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+		currentMenu = MAIN_SCREEN;
+	}	
 }
 void chooseActionPumpMenu(int x, int y) {
 	

@@ -11,7 +11,7 @@
 
 
 #include <Time.h>
-#include <EEPROM.h>
+#include "EEPROMCust.h"
 
 #define INDEX_PUMP_A						1
 #define INDEX_PUMP_B						2
@@ -90,21 +90,23 @@
 #define EEPROM_ADDR_PUMP_PERF_PC			234
 
 //delay between pumps (s)
+#define EEPROM_ADDR_PUMP_DELAY_PC_TO_PA		240
 #define EEPROM_ADDR_PUMP_DELAY_PA_TO_PB 	242
 #define EEPROM_ADDR_PUMP_DELAY_PB_TO_PC		244
 
 
+
 //time EEPROM storage addresses (LAST DOSING TIME)
-#define EEPROM_ADDR_HH_PA					1000
-#define EEPROM_ADDR_MM_PA					1002
+#define EEPROM_ADDR_HH_PA					300
+#define EEPROM_ADDR_MM_PA					302
 
-#define EEPROM_ADDR_HH_PB					1010
-#define EEPROM_ADDR_MM_PB					1012
+#define EEPROM_ADDR_HH_PB					304
+#define EEPROM_ADDR_MM_PB					306
 
-#define EEPROM_ADDR_HH_PC					1020
-#define EEPROM_ADDR_MM_PC					1022
+#define EEPROM_ADDR_HH_PC					308
+#define EEPROM_ADDR_MM_PC					310
 
-#define EEPROM_ADDR_LAST_DOSE_DAY			1100
+#define EEPROM_ADDR_LAST_DOSE_DAY			320
 
 typedef struct  {
 	uint8_t Second;

@@ -1,10 +1,10 @@
+#include "EEPROMCust.h"
 #include "UTFT_ext.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
 #include "ThermoMeter.h"
 #include "Definitions.h"
-#include <EEPROM.h>
 #include "Pump.h"
 #include <Wire.h>
 #include <Time.h>

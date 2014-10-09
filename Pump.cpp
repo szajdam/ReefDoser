@@ -16,7 +16,7 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 		EepromAddrRemainDose = EEPROM_ADDR_REMAIN_DOSE_PA;
 		EepromAddrDailyDose = EEPROM_ADDR_DAILY_DOSE_PA;
 		EepromAddrPumpPerf = EEPROM_ADDR_PUMP_PERF_PA;
-		EepromAddrPumpDelay = -1;
+		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PA_TO_PB;
 		EepromAddrHH = EEPROM_ADDR_HH_PA;
 		EepromAddrMM = EEPROM_ADDR_MM_PA;
 		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY;
@@ -63,15 +63,15 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 
 
 void Pump::initEEPROM() {
-	EEPROMWriteInt(EepromAddrDailyDose, DailyDose);
-	EEPROMWriteInt(EepromAddrHH, 0);
-	EEPROMWriteInt(EepromAddrMM, 0);
-	EEPROMWriteInt(EepromAddrLastDoseDay, CurrentTime->Day - 1);
+	EEPROMCust.writeUInt(EepromAddrDailyDose, DailyDose);
+	EEPROMCust.writeUInt(EepromAddrHH, 1);
+	EEPROMCust.writeUInt(EepromAddrMM, 1);
+	EEPROMCust.writeUInt(EepromAddrLastDoseDay, CurrentTime->Day - 1);
 	if(EepromAddrPumpDelay > 0){
-		EEPROMWriteInt(EepromAddrPumpDelay, 15);
+		EEPROMCust.writeUInt(EepromAddrPumpDelay, 15);
 	}
-	EEPROMWriteInt(EepromAddrRemainDose, 0);
-	EEPROMWriteInt(EepromAddrPumpPerf, 1000);
+	EEPROMCust.writeUInt(EepromAddrRemainDose, 0);
+	EEPROMCust.writeUInt(EepromAddrPumpPerf, 1000);
 	
 }
 void Pump::init(){
@@ -80,15 +80,15 @@ void Pump::init(){
 	pinMode(PumpIn2, OUTPUT);
 	stopPump();
 	
-	PumpPerf = (EEPROMReadInt(EepromAddrPumpPerf)>0?EEPROMReadInt(EepromAddrPumpPerf):1000);
-	DailyDose = (EEPROMReadInt(EepromAddrDailyDose)>0?EEPROMReadInt(EepromAddrDailyDose):DailyDose);
-	RemainingDailyDose = (int)EEPROMReadInt(EepromAddrRemainDose);
-	/*RemainingDailyDosesNo = EEPROMReadInt(EepromAddrNoOfRemainDoses);*/
-	PumpDelay = EepromAddrPumpDelay > 0?EEPROMReadInt(EepromAddrPumpDelay) : 0;
+	PumpPerf = (EEPROMCust.readUInt(EepromAddrPumpPerf)>0?EEPROMCust.readUInt(EepromAddrPumpPerf):1000);
+	DailyDose = (EEPROMCust.readUInt(EepromAddrDailyDose)>0?EEPROMCust.readUInt(EepromAddrDailyDose):DailyDose);
+	RemainingDailyDose = (int)EEPROMCust.readUInt(EepromAddrRemainDose);
+	/*RemainingDailyDosesNo = EEPROMCust.readUInt(EepromAddrNoOfRemainDoses);*/
+	PumpDelay = EepromAddrPumpDelay > 0?EEPROMCust.readUInt(EepromAddrPumpDelay) : 0;
 		
-	LastDosingTime.Day = EEPROMReadInt(EepromAddrLastDoseDay);
-	LastDosingTime.Hour = EEPROMReadInt(EepromAddrHH);
-	LastDosingTime.Minute = EEPROMReadInt(EepromAddrMM);
+	LastDosingTime.Day = EEPROMCust.readUInt(EepromAddrLastDoseDay);
+	LastDosingTime.Hour = EEPROMCust.readUInt(EepromAddrHH);
+	LastDosingTime.Minute = EEPROMCust.readUInt(EepromAddrMM);
 	
 	if(!advanceDay()) {
 		if(RemainingDailyDose > 0) { /*nothing to dose?*/
@@ -154,11 +154,11 @@ void Pump::calibrate() {
 }
 void Pump::setCalibration(int pumpPerformance) {
 	PumpPerf = pumpPerformance;
-	EEPROMWriteInt(EepromAddrPumpPerf, pumpPerformance);
+	EEPROMCust.writeUInt(EepromAddrPumpPerf, pumpPerformance);
 }
 void Pump::setDosage(int dosage) {
 	DailyDose = dosage;
-	EEPROMWriteInt(EepromAddrDailyDose, dosage);
+	EEPROMCust.writeUInt(EepromAddrDailyDose, dosage);
 }
 void Pump::fillPipes() {
 	changeState(STATE_PIPES_FILL);
@@ -230,23 +230,24 @@ void Pump::doseEnd(unsigned long dosedMillis) {
 	LastVolumePumped = (dosedMillis/PumpPerf);
 	//set remaining Dose
 	RemainingDailyDose = (RemainingDailyDose - LastVolumePumped);
-	EEPROMWriteInt(EepromAddrRemainDose, RemainingDailyDose);
+	EEPROMCust.updateUInt(EepromAddrRemainDose, RemainingDailyDose);
 	
 	LastDosingTime.Day = CurrentTime->Day;
 	LastDosingTime.Hour = CurrentTime->Hour;
 	LastDosingTime.Minute = CurrentTime->Minute;
+	
 	//set last dose day
-	if(EEPROMReadInt(EepromAddrLastDoseDay) != LastDosingTime.Day) {
-		EEPROMWriteInt(EepromAddrLastDoseDay, LastDosingTime.Day);
+	if(EEPROMCust.readUInt(EepromAddrLastDoseDay) != LastDosingTime.Day) {
+		EEPROMCust.updateUInt(EepromAddrLastDoseDay, LastDosingTime.Day);
 	}
 	//set last dose time
-	if(EEPROMReadInt(EepromAddrHH) != LastDosingTime.Hour) {
-		EEPROMWriteInt(EepromAddrHH, LastDosingTime.Hour);
+	if(EEPROMCust.readUInt(EepromAddrHH) != LastDosingTime.Hour) {
+		EEPROMCust.updateUInt(EepromAddrHH, LastDosingTime.Hour);
 	}
-	if(EEPROMReadInt(EepromAddrMM) != LastDosingTime.Minute) {
-		EEPROMWriteInt(EepromAddrMM, LastDosingTime.Minute);
+	if(EEPROMCust.readUInt(EepromAddrMM) != LastDosingTime.Minute) {
+		EEPROMCust.updateUInt(EepromAddrMM, LastDosingTime.Minute);
 	}
-	
+
 	if(RemainingDailyDose > 0) {
 		if (!setNextDosingTime()) {
 			changeState(STATE_DOSING_COMPLETED);	
@@ -271,7 +272,7 @@ boolean Pump::advanceDay() {
 	if(LastDosingTime.Day < CurrentTime->Day ) {
 		
 		RemainingDailyDose = (RemainingDailyDose + DailyDose);
-		EEPROMWriteInt(EepromAddrRemainDose, RemainingDailyDose);
+		EEPROMCust.writeUInt(EepromAddrRemainDose, RemainingDailyDose);
 		
 		defineDailyDosing(RemainingDailyDose);
 		
@@ -427,21 +428,5 @@ String Pump::to2Digits(String number) {
 
 void Pump::setDailyDose(int value) {
 	DailyDose = value;
-	EEPROMWriteInt(EepromAddrDailyDose, DailyDose);
-}
-
-
-
-void Pump::EEPROMWriteInt(int p_address, int p_value) {
-	byte lowByte = ((p_value >> 0) & 0xFF);
-	byte highByte = ((p_value >> 8) & 0xFF);
-
-	EEPROM.write(p_address, lowByte);
-	EEPROM.write(p_address + 1, highByte);
-}
-unsigned int Pump::EEPROMReadInt(int p_address) {
-	byte lowByte = EEPROM.read(p_address);
-	byte highByte = EEPROM.read(p_address + 1);
-
-	return ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
+	EEPROMCust.writeUInt(EepromAddrDailyDose, DailyDose);
 }

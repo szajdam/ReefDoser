@@ -70,9 +70,9 @@
 
 //EEPROM pump addresses
 //remaining doses (ml)
-#define EEPROM_ADDR_REMAIN_DOSE_PA			200
-#define EEPROM_ADDR_REMAIN_DOSE_PB			202
-#define EEPROM_ADDR_REMAIN_DOSE_PC			204
+#define EEPROM_ADDR_REMAIN_DOSE_PA			10
+#define EEPROM_ADDR_REMAIN_DOSE_PB			12
+#define EEPROM_ADDR_REMAIN_DOSE_PC			14
 
 //remaining doses (times)
 //#define EEPROM_ADDR_REMAIN_DOSE_PA			210
@@ -80,33 +80,33 @@
 //#define EEPROM_ADDR_REMAIN_DOSE_PC			214
 
 //daily dose (ml)
-#define EEPROM_ADDR_DAILY_DOSE_PA			220
-#define EEPROM_ADDR_DAILY_DOSE_PB 			222
-#define EEPROM_ADDR_DAILY_DOSE_PC			224
+#define EEPROM_ADDR_DAILY_DOSE_PA			20
+#define EEPROM_ADDR_DAILY_DOSE_PB 			22
+#define EEPROM_ADDR_DAILY_DOSE_PC			24
 
 //pumps performance (millis/ml)
-#define EEPROM_ADDR_PUMP_PERF_PA			230
-#define EEPROM_ADDR_PUMP_PERF_PB			232
-#define EEPROM_ADDR_PUMP_PERF_PC			234
+#define EEPROM_ADDR_PUMP_PERF_PA			30
+#define EEPROM_ADDR_PUMP_PERF_PB			32
+#define EEPROM_ADDR_PUMP_PERF_PC			34
 
 //delay between pumps (s)
-#define EEPROM_ADDR_PUMP_DELAY_PC_TO_PA		240
-#define EEPROM_ADDR_PUMP_DELAY_PA_TO_PB 	242
-#define EEPROM_ADDR_PUMP_DELAY_PB_TO_PC		244
+#define EEPROM_ADDR_PUMP_DELAY_PC_TO_PA		40
+#define EEPROM_ADDR_PUMP_DELAY_PA_TO_PB 	42
+#define EEPROM_ADDR_PUMP_DELAY_PB_TO_PC		44
 
 
 
 //time EEPROM storage addresses (LAST DOSING TIME)
-#define EEPROM_ADDR_HH_PA					300
-#define EEPROM_ADDR_MM_PA					302
+#define EEPROM_ADDR_HH_PA					50
+#define EEPROM_ADDR_MM_PA					52
 
-#define EEPROM_ADDR_HH_PB					304
-#define EEPROM_ADDR_MM_PB					306
+#define EEPROM_ADDR_HH_PB					54
+#define EEPROM_ADDR_MM_PB					56
 
-#define EEPROM_ADDR_HH_PC					308
-#define EEPROM_ADDR_MM_PC					310
+#define EEPROM_ADDR_HH_PC					58
+#define EEPROM_ADDR_MM_PC					60
 
-#define EEPROM_ADDR_LAST_DOSE_DAY			320
+#define EEPROM_ADDR_LAST_DOSE_DAY			62
 
 typedef struct  {
 	uint8_t Second;
@@ -125,16 +125,16 @@ class Pump
 	
 	
 	//eeprom addresses for the pump
-	int EepromAddrRemainDose, EepromAddrDailyDose, EepromAddrPumpPerf, EepromAddrPumpDelay, EepromAddrHH, EepromAddrMM, EepromAddrLastDoseDay;
+	uint8_t EepromAddrRemainDose, EepromAddrDailyDose, EepromAddrPumpPerf, EepromAddrPumpDelay, EepromAddrHH, EepromAddrMM, EepromAddrLastDoseDay;
 	
 	//pump actual state
-	int PumpState;
+	uint8_t PumpState;
 	unsigned long PumpStateMillis;
 	unsigned int LastVolumePumped;
 	doseTime_t LastDosingTime;
 	doseTime_t NextDosingTime;
 	unsigned int RemainingDailyDose; //ml
-	unsigned int DailyDosesNo; //times
+	uint8_t DailyDosesNo; //times
 	unsigned int DailyDoseDelay; //minutes between dosages
 	unsigned int PumpDelay; //minutes between pumps;
 	

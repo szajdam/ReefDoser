@@ -264,11 +264,17 @@ void updatePumpPicture(int x1, int y1, int x2, int y2, String labelPump, int col
 		
 	}
 }
-
+void setDefaults() {
+	pumpA.initEEPROM();
+	pumpA.init();
+	pumpB.initEEPROM();
+	pumpB.init();
+	pumpC.initEEPROM();
+	pumpC.init();
+}
 void drawMillis(){
 	drawMillis(millis());
 }
-
 void drawMillis(unsigned long currMilis){
 	lcd.setFont(SmallFont);
 	//String millisMsg = String(currMilis);
@@ -295,16 +301,6 @@ void drawMainScreen(float temp, String time, String date) {
 	drawButtonWLabel(240, 60, 310, 110, "Menu");
 	drawMillis();
 }
-void readMainScreen(int x, int y){
-	if ((y>=60) && (y<=110))
-	{
-		if ((x>=240) && (x<=310))  // Button: Menu
-		{
-			pressButton(240, 60, 310, 110);
-			choosenMenu = MAIN_MENU_SCREEN;
-		}
-	}
-}
 void drawMainMenuScreen(float temp, String time, String date) {
 	lcd.clrScr();
 	
@@ -319,55 +315,13 @@ void drawMainMenuScreen(float temp, String time, String date) {
 	drawButtonWLabel(260, 40, 310, 100, "Exit", 1);
 	drawMillis();
 }
-void readMainMenuScreen(int x, int y){
-	if ((y>=40) && (y<=90))
-	{
-		if ((x>=10) && (x<=60))  // Button: Pumps Setup
-		{
-			pressButton(10, 40, 60, 90);
-			choosenMenu = PUMPS_MENU_SCREEN;
-		}
-		if ((x>=70) && (x<=120))  // Button: Time Setup
-		{
-			pressButton(70, 40, 120, 90);
-			choosenMenu = TIME_SET_MENU_SCREEN;
-		}
-		if ((x>=130) && (x<=180))  // Button: Date Setup
-		{
-			pressButton(130, 40, 180, 90);
-			choosenMenu = DATE_SET_MENU_SCREEN;
-		}
-	}
-	if(y>=100 && y<=150) {
-		if ((x>=10) && (x<=60))  // Button: Reset to defaults
-		{
-			pressButton(10, 100, 60, 150);
-			
-			choosenMenu = DEFAULTS_MENU_SCREEN;
-		}	
-		else if ((x>=70) && (x<=120))  // Button: List Current Setup
-		{
-			pressButton(70, 100, 120, 150);
-			choosenMenu = LIST_SETUP_MENU_SCREEN;
-		}
-	}
-	if ((y>=40) && (y<=100))
-	{
-		if ((x>=260) && (x<=310))  // Button: Exit menu
-		{
-			pressButton(260, 40, 310, 100);
-			choosenMenu = MAIN_SCREEN;
-		}
-	}
-}
-
 void drawListSetupMenuScreen(float temp, String time, String date) {
 	lcd.clrScr();
 	currentMenu = LIST_SETUP_MENU_SCREEN;
 	drawBar(temp, time, date); //end of top bar is with x=30
 	//buttons
-	drawButtonWLabel(260, 40, 310, 100, "Back",1);
-	drawButtonWLabel(260, 140, 310, 210, "Exit",1);
+	drawButtonWLabel(270, 40, 310, 100, "Back",1);
+	drawButtonWLabel(270, 140, 310, 210, "Exit",1);
 	
 	drawMillis(); 	//top of bottom bar is at x=210
 		
@@ -450,32 +404,6 @@ void drawListSetupMenuScreen(float temp, String time, String date) {
 	lcd.print(msg, LEFT, currentLine);
 
 }
-
-void readListSetupMenuScreen(int x, int y) {
-	if ((x>=260) && (x<=310))
-	{
-		if ((y>=40) && (y<=100))  // Button: BACK TO MAIN menu
-		{
-			pressButton(260, 40, 310, 100);
-			choosenMenu = MAIN_MENU_SCREEN;
-		}
-		else if ((y>=140) && (y<=210))  // Button: Exit menu
-		{
-			pressButton(260, 140, 310, 210);
-			choosenMenu = MAIN_SCREEN;
-		}
-	}
-}
-
-void setDefaults() {
-	pumpA.initEEPROM();
-	pumpA.init();
-	pumpB.initEEPROM();
-	pumpB.init();
-	pumpC.initEEPROM();
-	pumpC.init();
-}
-
 void drawPumpsMenuScreen(float temp, String time, String date) {
 	lcd.clrScr();
 	
@@ -500,6 +428,138 @@ void drawPumpsMenuScreen(float temp, String time, String date) {
 	drawButtonWLabel(260, 40, 310, 100, "Back",1);
 	drawButtonWLabel(260, 140, 310, 210, "Exit",1);
 	drawMillis();
+}
+void drawNumKeyScreen(String label){
+	lcd.clrScr();
+		
+	lcd.setFont(SmallFont);
+	lcd.setBackColor(0,0,0);
+	lcd.setColor(255, 255, 255);
+	lcd.print(label, 10, 25);
+
+	drawButtonWLabel(10, 50, 60, 100, "1");
+	drawButtonWLabel(70, 50, 120, 100, "2");
+	drawButtonWLabel(130, 50, 180, 100, "3");
+	drawButtonWLabel(190, 50, 240, 100, "4");
+	drawButtonWLabel(250, 50, 300, 100, "5");
+	
+	drawButtonWLabel(10, 110, 60, 160, "6");
+	drawButtonWLabel(70, 110, 120, 160, "7");
+	drawButtonWLabel(130, 110, 180, 160, "8");
+	drawButtonWLabel(190, 110, 240, 160, "9");
+	drawButtonWLabel(250, 110, 300, 160, "0");
+	
+	drawButtonWLabel(10, 170, 150, 220, "CLEAR");
+	drawButtonWLabel(160, 170, 300, 220, "SET");
+	lcd.setBackColor(0, 0, 0);
+	drawMillis();
+	
+}
+void drawNumKeyResult() {
+	lcd.setFont(BigFont);
+	lcd.setBackColor(0,0,0);
+	lcd.setColor(255, 255, 255);
+	lcd.printNumI(numKeyResult, 170, 20);
+}
+void drawPumpCalibScreen(String pumpLabel, int mode = 0){
+ 	lcd.clrScr();
+ 	
+ 	if(mode == 0) {//pre calibration
+ 		
+ 		lcd.setFont(SmallFont);
+ 		
+ 		String labelCal = "Calibration for pump " + pumpLabel;
+ 		String btnLabel = "Start";
+ 		
+ 		lcd.setBackColor(VGA_TRANSPARENT);
+ 		lcd.setColor(255, 255, 255);
+ 		lcd.print(labelCal, 20, 80);
+ 		
+ 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
+ 	}
+ 	else if(mode == 1)	{ //process results (previous menu = NumKey)
+ 		
+ 		String label = "Pump " + pumpLabel;
+ 		label = label + " set with " + numKeyResult + " ms/ml";
+ 		String btnLabel = "Confirm";
+ 		
+ 		lcd.setFont(SmallFont);
+ 		
+ 		lcd.setBackColor(VGA_TRANSPARENT);
+ 		lcd.setColor(255, 255, 255);
+ 		lcd.print(label, 20, 80);
+ 		
+ 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
+ 	}
+ 
+ 	
+	
+}
+void readMainScreen(int x, int y){
+	if ((y>=60) && (y<=110))
+	{
+		if ((x>=240) && (x<=310))  // Button: Menu
+		{
+			pressButton(240, 60, 310, 110);
+			choosenMenu = MAIN_MENU_SCREEN;
+		}
+	}
+}
+void readMainMenuScreen(int x, int y){
+	if ((y>=40) && (y<=90))
+	{
+		if ((x>=10) && (x<=60))  // Button: Pumps Setup
+		{
+			pressButton(10, 40, 60, 90);
+			choosenMenu = PUMPS_MENU_SCREEN;
+		}
+		if ((x>=70) && (x<=120))  // Button: Time Setup
+		{
+			pressButton(70, 40, 120, 90);
+			choosenMenu = TIME_SET_MENU_SCREEN;
+		}
+		if ((x>=130) && (x<=180))  // Button: Date Setup
+		{
+			pressButton(130, 40, 180, 90);
+			choosenMenu = DATE_SET_MENU_SCREEN;
+		}
+	}
+	if(y>=100 && y<=150) {
+		if ((x>=10) && (x<=60))  // Button: Reset to defaults
+		{
+			pressButton(10, 100, 60, 150);
+			
+			choosenMenu = DEFAULTS_MENU_SCREEN;
+		}	
+		else if ((x>=70) && (x<=120))  // Button: List Current Setup
+		{
+			pressButton(70, 100, 120, 150);
+			choosenMenu = LIST_SETUP_MENU_SCREEN;
+		}
+	}
+	if ((y>=40) && (y<=100))
+	{
+		if ((x>=260) && (x<=310))  // Button: Exit menu
+		{
+			pressButton(260, 40, 310, 100);
+			choosenMenu = MAIN_SCREEN;
+		}
+	}
+}
+void readListSetupMenuScreen(int x, int y) {
+	if ((x>=270) && (x<=310))
+	{
+		if ((y>=40) && (y<=100))  // Button: BACK TO MAIN menu
+		{
+			pressButton(270, 40, 310, 100);
+			choosenMenu = MAIN_MENU_SCREEN;
+		}
+		else if ((y>=140) && (y<=210))  // Button: Exit menu
+		{
+			pressButton(270, 140, 310, 210);
+			choosenMenu = MAIN_SCREEN;
+		}
+	}
 }
 void readPumpMenuScreen(int x, int y){
 	if ((y>=40) && (y<=90)) //Pump A row
@@ -584,38 +644,6 @@ void readPumpMenuScreen(int x, int y){
 			choosenMenu = MAIN_SCREEN;
 		}
 	}
-}
-void drawNumKeyScreen(String label){
-	lcd.clrScr();
-		
-	lcd.setFont(SmallFont);
-	lcd.setBackColor(0,0,0);
-	lcd.setColor(255, 255, 255);
-	lcd.print(label, 10, 25);
-
-	drawButtonWLabel(10, 50, 60, 100, "1");
-	drawButtonWLabel(70, 50, 120, 100, "2");
-	drawButtonWLabel(130, 50, 180, 100, "3");
-	drawButtonWLabel(190, 50, 240, 100, "4");
-	drawButtonWLabel(250, 50, 300, 100, "5");
-	
-	drawButtonWLabel(10, 110, 60, 160, "6");
-	drawButtonWLabel(70, 110, 120, 160, "7");
-	drawButtonWLabel(130, 110, 180, 160, "8");
-	drawButtonWLabel(190, 110, 240, 160, "9");
-	drawButtonWLabel(250, 110, 300, 160, "0");
-	
-	drawButtonWLabel(10, 170, 150, 220, "CLEAR");
-	drawButtonWLabel(160, 170, 300, 220, "SET");
-	lcd.setBackColor(0, 0, 0);
-	drawMillis();
-	
-}
-void drawNumKeyResult() {
-	lcd.setFont(BigFont);
-	lcd.setBackColor(0,0,0);
-	lcd.setColor(255, 255, 255);
-	lcd.printNumI(numKeyResult, 170, 20);
 }
 void readNumKeyScreen(int x, int y){
 	
@@ -713,40 +741,6 @@ void readNumKeyScreen(int x, int y){
 		}
 	}
 }
-void drawPumpCalibScreen(String pumpLabel, int mode = 0){
- 	lcd.clrScr();
- 	
- 	if(mode == 0) {//pre calibration
- 		
- 		lcd.setFont(SmallFont);
- 		
- 		String labelCal = "Calibration for pump " + pumpLabel;
- 		String btnLabel = "Start";
- 		
- 		lcd.setBackColor(VGA_TRANSPARENT);
- 		lcd.setColor(255, 255, 255);
- 		lcd.print(labelCal, 20, 80);
- 		
- 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
- 	}
- 	else if(mode == 1)	{ //process results (previous menu = NumKey)
- 		
- 		String label = "Pump " + pumpLabel;
- 		label = label + " set with " + numKeyResult + " ms/ml";
- 		String btnLabel = "Confirm";
- 		
- 		lcd.setFont(SmallFont);
- 		
- 		lcd.setBackColor(VGA_TRANSPARENT);
- 		lcd.setColor(255, 255, 255);
- 		lcd.print(label, 20, 80);
- 		
- 		drawButtonWLabel(80, 110, 240, 160, btnLabel);
- 	}
- 
- 	
-	
-}
 void readPumpCalibScreen(int x, int y){
 	if ((y>=110) && (y<=160)) {
 		if ((x>=80) && (x<=240)) {
@@ -841,11 +835,11 @@ void chooseActionMainMenu(int x, int y) {
 		}
 		else if(choosenMenu == TIME_SET_MENU_SCREEN) {
 			previousMenu = currentMenu;
-			//TODO: no handling	
+			//TODO: no handling	yet
 		}
 		else if(choosenMenu == DATE_SET_MENU_SCREEN) {
 			previousMenu = currentMenu;
-			//TODO: no handling
+			//TODO: no handling yet
 		}
 
 		else if(choosenMenu == DEFAULTS_MENU_SCREEN) {
@@ -853,7 +847,9 @@ void chooseActionMainMenu(int x, int y) {
 			currentMenu = choosenMenu;
 			setDefaults();
 			choosenMenu = MAIN_MENU_SCREEN;
-			//TODO: no handling
+			drawMainMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			previousMenu = DEFAULTS_MENU_SCREEN;
+			currentMenu = MAIN_MENU_SCREEN;
 		}
 		else if(choosenMenu == LIST_SETUP_MENU_SCREEN) {
 			previousMenu = currentMenu;
@@ -868,8 +864,8 @@ void chooseActionMainMenu(int x, int y) {
 	}
 	
 }
-
 void chooseActionListSetup(int x, int y) {
+	readListSetupMenuScreen();
 	//main menu
 	if (choosenMenu == MAIN_MENU_SCREEN){
 		previousMenu = currentMenu;
@@ -912,7 +908,7 @@ void chooseActionPumpMenu(int x, int y) {
 			previousMenu = currentMenu;
 			currentMenu = PUMP_PIPES_FILL_A;
 			pumpA.fillPipes();
-			//drawPumpsMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			
 			previousMenu = currentMenu;
 			choosenMenu = PUMPS_MENU_SCREEN;
 			currentMenu = choosenMenu;
@@ -921,7 +917,7 @@ void chooseActionPumpMenu(int x, int y) {
 			previousMenu = currentMenu;
 			currentMenu = PUMP_PIPES_FILL_B;
 			pumpB.fillPipes();
-			//drawPumpsMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			
 			previousMenu = currentMenu;
 			choosenMenu = PUMPS_MENU_SCREEN;
 			currentMenu = choosenMenu;
@@ -930,7 +926,7 @@ void chooseActionPumpMenu(int x, int y) {
 			previousMenu = currentMenu;
 			currentMenu = PUMP_PIPES_FILL_C;
 			pumpC.fillPipes();
-			//drawPumpsMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			
 			previousMenu = currentMenu;
 			choosenMenu = PUMPS_MENU_SCREEN;
 			currentMenu = choosenMenu;

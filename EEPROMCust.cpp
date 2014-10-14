@@ -4,7 +4,7 @@
 #include "Arduino.h"
 #include <Wire.h>
 
-boolean UseOneWireEEPROM = true;
+boolean UseOneWireEEPROM = false;
 
 
 EEPROMCustClass::EEPROMCustClass() {
@@ -130,6 +130,7 @@ void EEPROMCustClass::writeUInt(int p_address, unsigned int p_value) {
 		
 		EEPROMCust.writeByte(p_address, lowByte);
 		EEPROMCust.writeByte(p_address + 1, highByte);
+		//eeprom_write_word((uint16_t *)p_address, p_value);
 	}
 }
 
@@ -142,6 +143,7 @@ unsigned int EEPROMCustClass::readUInt(int p_address) {
 		byte highByte = EEPROMCust.readByte(p_address + 1);
 
 		return ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
+		//return eeprom_read_word((uint16_t *)p_address);
 	}
 }
 

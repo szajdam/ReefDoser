@@ -80,7 +80,7 @@ void dose() {
 	int pumpState = 0;
 	pumpState = pumpA.scheduledDose();
 	if (pumpState != pumpACurrentState) {
-		if(pumpState == 3) {
+		if(pumpState == 4) {
 			updatePumpPicture(5, 35, 40, 70, pumpA.getLabel(), 0, 255, 0);
 		}
 		else {
@@ -91,7 +91,7 @@ void dose() {
 	
 	pumpState = pumpB.scheduledDose();
 	if (pumpState != pumpBCurrentState) {
-		if(pumpState == 3) {
+		if(pumpState == 4) {
 			updatePumpPicture(5, 85, 40, 120, pumpB.getLabel(), 0, 255, 0);
 		}
 		else {
@@ -102,7 +102,7 @@ void dose() {
 	
 	pumpState = pumpC.scheduledDose();
 	if (pumpState != pumpCCurrentState) {
-		if(pumpState == 3) {
+		if(pumpState == 4) {
 			updatePumpPicture(5, 135, 40, 170, pumpC.getLabel(), 0, 255, 0);
 		}
 		else {
@@ -141,11 +141,11 @@ void scrInit() {
 	pumpA = Pump(INDEX_PUMP_A, currentTime);
 	pumpB = Pump(INDEX_PUMP_B, currentTime);
 	pumpC = Pump(INDEX_PUMP_C, currentTime);
-	
+	delay(50);
 	pumpA.init();
 	pumpB.init(pumpA);
 	pumpC.init(pumpB);
-	pumpA.addDependentPump(pumpC);
+	//pumpA.addDependentPump(pumpC);
 	
 	if(false) {
 		setDefaults();
@@ -355,6 +355,15 @@ void drawListSetupMenuScreen(float temp, String time, String date) {
 	msg = msg + pumpA.getRemainingDose();
 	lcd.print(msg, LEFT, currentLine);
 	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "A DDose: ";
+	msg = msg + pumpA.getDailyDose();
+	msg = msg + " PPerf: ";
+	msg = msg + pumpA.getPumpPerformance();
+	msg = msg + " MEM: ";
+	msg = msg + pumpA.getEEpromData();
+	lcd.print(msg, LEFT, currentLine);
+	
 	//pump B	
 	currentLine = currentLine + fontHeight + spacing;
 	msg = "B LastDoseD: ";
@@ -379,6 +388,15 @@ void drawListSetupMenuScreen(float temp, String time, String date) {
 	msg = msg + pumpB.getRemainingDose();
 	lcd.print(msg, LEFT, currentLine);
 	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "B DDose: ";
+	msg = msg + pumpB.getDailyDose();
+	msg = msg + " PPerf: ";
+	msg = msg + pumpB.getPumpPerformance();
+	msg = msg + " MEM: ";
+	msg = msg + pumpB.getEEpromData();
+	lcd.print(msg, LEFT, currentLine);
+	
 	//pump C
 	currentLine = currentLine + fontHeight + spacing;
 	msg = "C LastDoseD: ";
@@ -401,6 +419,15 @@ void drawListSetupMenuScreen(float temp, String time, String date) {
 	msg = msg + pumpC.getNextDoseMl();
 	msg = msg + " RemDose: ";
 	msg = msg + pumpC.getRemainingDose();
+	lcd.print(msg, LEFT, currentLine);
+	
+	currentLine = currentLine + fontHeight + spacing;
+	msg = "C DDose: ";
+	msg = msg + pumpC.getDailyDose();
+	msg = msg + " PPerf: ";
+	msg = msg + pumpC.getPumpPerformance();
+	msg = msg + " MEM: ";
+	msg = msg + pumpC.getEEpromData();
 	lcd.print(msg, LEFT, currentLine);
 
 }
@@ -819,7 +846,7 @@ void chooseActionMain(int x, int y) {
 	if(currentMenu != choosenMenu) {
 		if (choosenMenu == MAIN_MENU_SCREEN){
 			previousMenu = currentMenu;
-			drawMainMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			drawMainMenuScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = MAIN_MENU_SCREEN;
 		}
 	}
@@ -830,7 +857,7 @@ void chooseActionMainMenu(int x, int y) {
 	if (currentMenu != choosenMenu) {
 		if(choosenMenu == PUMPS_MENU_SCREEN) {
 			previousMenu = currentMenu;
-			drawPumpsMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			drawPumpsMenuScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = PUMPS_MENU_SCREEN;
 		}
 		else if(choosenMenu == TIME_SET_MENU_SCREEN) {
@@ -847,36 +874,36 @@ void chooseActionMainMenu(int x, int y) {
 			currentMenu = choosenMenu;
 			setDefaults();
 			choosenMenu = MAIN_MENU_SCREEN;
-			drawMainMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			drawMainMenuScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			previousMenu = DEFAULTS_MENU_SCREEN;
 			currentMenu = MAIN_MENU_SCREEN;
 		}
 		else if(choosenMenu == LIST_SETUP_MENU_SCREEN) {
 			previousMenu = currentMenu;
-			drawListSetupMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			drawListSetupMenuScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = LIST_SETUP_MENU_SCREEN;
 		}
 		else if(choosenMenu == MAIN_SCREEN) {
 			previousMenu = currentMenu;
-			drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			drawMainScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = MAIN_SCREEN;
 		}
 	}
 	
 }
 void chooseActionListSetup(int x, int y) {
-	readListSetupMenuScreen();
+	readListSetupMenuScreen(x, y);
 	//main menu
 	if (choosenMenu == MAIN_MENU_SCREEN){
 		previousMenu = currentMenu;
-		drawMainMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+		drawMainMenuScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 		currentMenu = MAIN_MENU_SCREEN;
 	}
 
 	//main screen
 	else if (choosenMenu == MAIN_SCREEN){
 		previousMenu = currentMenu;
-		drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+		drawMainScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 		currentMenu = MAIN_SCREEN;
 	}	
 }
@@ -989,14 +1016,14 @@ void chooseActionPumpMenu(int x, int y) {
 		//main menu
 		else if (choosenMenu == MAIN_MENU_SCREEN){
 			previousMenu = currentMenu;
-			drawMainMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			drawMainMenuScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = MAIN_MENU_SCREEN;
 		}
 		
 		//main screen
 		else if (choosenMenu == MAIN_SCREEN){
 			previousMenu = currentMenu;
-			drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			drawMainScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = MAIN_SCREEN;
 		}
 	}
@@ -1108,7 +1135,7 @@ void chooseActionNumKeyPumpsSetup(int x, int y) {
 				drawLog("dose setup - no setup " + numKeyResult);
 			}
 			numKeyResult = 0;
-			drawPumpsMenuScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			drawPumpsMenuScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 			currentMenu = PUMPS_MENU_SCREEN;
 		}
 	}

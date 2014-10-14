@@ -12,6 +12,7 @@
 
 #include <Time.h>
 #include "EEPROMCust.h"
+#include "Logger.h"
 
 #define INDEX_PUMP_A						1
 #define INDEX_PUMP_B						2
@@ -34,35 +35,36 @@
 
 #define PUMP_A_LABEL						"Alk"
 #define PUMP_B_LABEL						"Ca"
-#define PUMP_C_LABEL						""
+#define PUMP_C_LABEL						"Salt"
 
 #define STATE_UNDEFINED						0
 #define STATE_INITIALIZED					1
 #define STATE_IDLE							2
-#define STATE_DOSING						3
-#define STATE_CALIBRATION					4
-#define STATE_PIPES_FILL					5
-#define STATE_DOSING_COMPLETED				6
+#define STATE_DAY_ADVANCED					3
+#define STATE_DOSING						4
+#define STATE_CALIBRATION					5
+#define STATE_PIPES_FILL					6
+#define STATE_DOSING_COMPLETED				7
 
 
 
 #define TIMEOUT_CALIBRATION_DOSE			5000
 #define TIMEOUT_PIPES_FILL					(long)20000
 
-#define TIME_AN_HOUR						(long)60*60*1000 //an Hour
-#define MINUTES_IN_HOUR						(unsigned int)60 //an Hour
+#define TIME_AN_HOUR						(long)60*60*1000
+#define MINUTES_IN_HOUR						(unsigned int)60
 
 #define DAILY_DOSES							12
-#define DAILY_DOSES_MIN_DELAY				60 //an Hour delay (in minutes)
-#define DAILY_DOSES_MIN_DOSE				2 //2 milliliters as minimal dose (in minutes)
+#define DAILY_DOSES_MIN_DELAY				60
+#define DAILY_DOSES_MIN_DOSE				2
 #define DAILY_DOSES_RESET_HOUR				1
-#define DAILY_DOSES_START_HOUR				7
+#define DAILY_DOSES_START_HOUR				8
 #define DAILY_DOSES_END_HOUR				20
 
 
-#define DAILY_DOSE_DEFAULT_PA 				112 //ALK
-#define DAILY_DOSE_DEFAULT_PB 				18 //CA
-#define DAILY_DOSE_DEFAULT_PC 				160 //SALT
+#define DAILY_DOSE_DEFAULT_PA 				112
+#define DAILY_DOSE_DEFAULT_PB 				18
+#define DAILY_DOSE_DEFAULT_PC 				160
 
 #define PUMP_PERF_DEFAULT_PA 				1000
 #define PUMP_PERF_DEFAULT_PB 				1000
@@ -81,8 +83,8 @@
 
 //daily dose (ml)
 #define EEPROM_ADDR_DAILY_DOSE_PA			20
-#define EEPROM_ADDR_DAILY_DOSE_PB 			22
-#define EEPROM_ADDR_DAILY_DOSE_PC			24
+#define EEPROM_ADDR_DAILY_DOSE_PB 			24
+#define EEPROM_ADDR_DAILY_DOSE_PC			28
 
 //pumps performance (millis/ml)
 #define EEPROM_ADDR_PUMP_PERF_PA			30
@@ -126,15 +128,16 @@ class Pump
 	
 	//eeprom addresses for the pump
 	uint8_t EepromAddrRemainDose, EepromAddrDailyDose, EepromAddrPumpPerf, EepromAddrPumpDelay, EepromAddrHH, EepromAddrMM, EepromAddrLastDoseDay;
-	
+	LoggerClass logger;
 	//pump actual state
-	uint8_t PumpState;
+	unsigned int PumpState;
 	unsigned long PumpStateMillis;
 	unsigned int LastVolumePumped;
 	doseTime_t LastDosingTime;
 	doseTime_t NextDosingTime;
 	unsigned int RemainingDailyDose; //ml
-	uint8_t DailyDosesNo; //times
+	unsigned int AlreadyDosed; //ml
+	unsigned int DailyDosesNo; //times
 	unsigned int DailyDoseDelay; //minutes between dosages
 	unsigned int PumpDelay; //minutes between pumps;
 	
@@ -142,8 +145,8 @@ class Pump
 	tmElements_t *CurrentTime;
 	
 	//dosing definition
-	int DailyDose;
-	unsigned long PumpPerf; //ml * 1000ms
+	unsigned int DailyDose;
+	unsigned int PumpPerf; //ml * 1000ms
 	
 	//methods
 	void EEPROMWriteInt(int, int);
@@ -177,7 +180,7 @@ class Pump
 	int getState();
 	unsigned long getMillisInState();
 	
-	int getRemainingDose();
+	unsigned int getRemainingDose();
 	doseTime_t getNextDosingTime();
 	void calibrate();
 	void setCalibration(int);
@@ -192,8 +195,11 @@ class Pump
 	String getLastDosingDayStr();
 	String getNextDosingTimeStr();
 	String getNextDosingDayStr();
-	int getNextDoseMl();
-	int getDoseNo();
+	unsigned int getNextDoseMl();
+	unsigned int getDoseNo();
+	unsigned int getDailyDose();
+	unsigned int getPumpPerformance();
+	String getEEpromData();
 };
 
 

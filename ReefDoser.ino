@@ -1,3 +1,4 @@
+#include "Logger.h"
 #include "EEPROMCust.h"
 #include "UTFT_ext.h"
 #include <OneWire.h>
@@ -20,35 +21,35 @@ char stCurrent[20]="";
 int stCurrentLen=0;
 char stLast[20]="";
 
-unsigned long lastMillis = millis();
+unsigned long LastMillis = millis();
 
-unsigned long loopMillis = 1000; //second
+unsigned long LoopMillis = (unsigned long)10*1000; //10 seconds
 
-ThermoMeter tMeter;
+ThermoMeter TMeter;
 
 
 
 void setup(){
 	readTime();
-	tMeter.init();
+	TMeter.init();
 	scrInit();
-	drawMainScreen(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
-	//setRTCTimeFromFile();
+	drawMainScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+	delay(1000);
+	updatePumpsStatus();
 }
 
 
 void loop() {
-	drawMillis(lastMillis);
+	drawMillis(millis());
 	chooseAction();
 	dose();
 	
-	
 	//wait to receive full loop within a second 
 	
-	if (millis() - lastMillis >= loopMillis) {
-		lastMillis = millis();
+	if (millis() - LastMillis >= LoopMillis) {
+		LastMillis = millis();
 		readTime();
-		drawBar(tMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+		drawBar(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 		updatePumpsStatus();
 	}
  }

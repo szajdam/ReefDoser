@@ -22,6 +22,11 @@ void LoggerClass::appendLog(String msg) {
 	}
 }
 
+void LoggerClass::log(String msg) {
+	this->appendLog(msg);
+	this->flush();
+}
+
 void LoggerClass::flush(){
 	if(loggingAvailable) {
 		String logMsg = Source;

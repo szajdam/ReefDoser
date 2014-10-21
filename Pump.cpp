@@ -103,7 +103,7 @@ void Pump::init(){
 	RemainingDailyDose = EEPROMCust.readUInt(EepromAddrRemainDose);
 	PumpDelay = EEPROMCust.readUInt(EepromAddrPumpDelay);
 	
-	logger.appendLog("PumpPerf");
+	logger.appendLog("Pump::init() PumpPerf");
 	logger.appendLog((String)PumpPerf);
 	logger.flush();	
 	logger.appendLog("DailyDose");
@@ -120,7 +120,7 @@ void Pump::init(){
 	LastDosingTime.Hour = EEPROMCust.readUInt(EepromAddrHH);
 	LastDosingTime.Minute = EEPROMCust.readUInt(EepromAddrMM);
 	
-	logger.appendLog("LastDosingTime.Day");
+	logger.appendLog("Pump::init() LastDosingTime.Day");
 	logger.appendLog((String)LastDosingTime.Day);
 	logger.appendLog(".Hour");
 	logger.appendLog((String)LastDosingTime.Hour);
@@ -131,7 +131,8 @@ void Pump::init(){
 	
 	
 	if(!this->advanceDay()) {
-	
+		logger.log("Pump::init() this->advanceDay() == FALSE");
+		
 		this->defineDailyDosing(RemainingDailyDose);
 		this->setNextDosingTime();
 		
@@ -318,7 +319,15 @@ unsigned long Pump::checkDosingEnd() {
 		unsigned long currentMillis = millis();
 		unsigned long millisToDose = min((unsigned long)round((double)(DailyDose * PumpPerf) / DailyDosesNo), (unsigned long)RemainingDailyDose * PumpPerf);  /*remaning dose can be lower than calculated dosage;*/
 		unsigned long millisDiff = (currentMillis - PumpStateMillis);
+		
+		logger.appendLog("Pump::checkDosingEnd() millisToDose");
+		logger.appendLog((String)millisToDose);
+		logger.appendLog("millisDiff");
+		logger.appendLog((String)millisDiff);
+		logger.flush();
+		
 		if(millisDiff >= millisToDose) {
+			logger.log("Pump::checkDosingEnd() millisDiff >= millisToDose");
 			return millisDiff;
 		}
 		else {
@@ -337,9 +346,18 @@ void Pump::doseEnd(unsigned long dosedMillis) {
 	LastVolumePumped = (unsigned int)round((float)dosedMillis/PumpPerf);
 	AlreadyDosed = AlreadyDosed + LastVolumePumped;
 	
+	logger.appendLog("Pump::doseEnd() LastVolumePumped");
+	logger.appendLog((String)LastVolumePumped);
+	logger.appendLog("AlreadyDosed");
+	logger.appendLog((String)AlreadyDosed);
+	
 	//set remaining Dose
 	RemainingDailyDose = RemainingDailyDose - LastVolumePumped;
 	EEPROMCust.updateUInt(EepromAddrRemainDose, RemainingDailyDose);
+	
+	logger.appendLog("RemainingDailyDose");
+	logger.appendLog((String)RemainingDailyDose);
+	logger.flush();
 	
 	LastDosingTime.Day = CurrentTime->Day;
 	LastDosingTime.Hour = CurrentTime->Hour;
@@ -358,7 +376,9 @@ void Pump::doseEnd(unsigned long dosedMillis) {
 	}
 
 	if(RemainingDailyDose > 0) {
+		logger.log("Pump::doseEnd() RemainingDailyDose > 0");
 		if (!this->setNextDosingTime()) {
+			logger.log("Pump::doseEnd() !this->setNextDosingTime()");
 			this->changeState(STATE_DOSING_COMPLETED);	
 		}
 	}
@@ -393,12 +413,26 @@ boolean Pump::setNextDosingTime() {
 		nextDoseHH = nextDoseHH;
 		nextDoseMM = (nextDoseMM + DailyDoseDelay);
 	}
+	logger.appendLog("Pump::setNextDosingTime() nextDoseHH");
+	logger.appendLog((String)nextDoseHH);
+	logger.appendLog("nextDoseMM");
+	logger.appendLog((String)nextDoseMM);
+	logger.flush();
 	
 	uint8_t depNextDosingHH = DependentToPump->NextDosingTime.Hour;
 	uint8_t depNextDosingMM = DependentToPump->NextDosingTime.Minute;
 	
+	logger.appendLog("Pump::setNextDosingTime() depNextDosingHH");
+	logger.appendLog((String)depNextDosingHH);
+	logger.appendLog("depNextDosingMM");
+	logger.appendLog((String)depNextDosingMM);
+	logger.flush();
+	
 	/*calculate pump dependency delay*/
 	if(nextDoseHH > depNextDosingHH){
+		
+		logger.log("Pump::setNextDosingTime() nextDoseHH > depNextDosingHH");
+		
 		unsigned int tempNextDoseMM = nextDoseMM + max(PumpDelay - (MINUTES_IN_HOUR - depNextDosingMM + nextDoseMM), 0);
 		if(tempNextDoseMM >= MINUTES_IN_HOUR) {
 			nextDoseHH = nextDoseHH + floor((float)tempNextDoseMM / MINUTES_IN_HOUR);
@@ -410,6 +444,9 @@ boolean Pump::setNextDosingTime() {
 		}
 	}
 	else if(nextDoseHH < depNextDosingHH){
+		
+		logger.log("Pump::setNextDosingTime() nextDoseHH < depNextDosingHH");
+		
 		if((MINUTES_IN_HOUR - nextDoseMM + depNextDosingMM) >= PumpDelay 
 			|| nextDoseHH < (depNextDosingHH + 1)) {
 			/*nothing*/
@@ -426,6 +463,9 @@ boolean Pump::setNextDosingTime() {
 		}
 	}
 	else { /*nextDoseHH == depNextDosingHH*/
+		
+		logger.log("Pump::setNextDosingTime() nextDoseHH == depNextDosingHH");
+		
 		unsigned int tempNextDoseMM = nextDoseMM + max(PumpDelay - (nextDoseMM - depNextDosingMM), 0);
 		if(tempNextDoseMM >= MINUTES_IN_HOUR) {
 			nextDoseHH = nextDoseHH + floor((float)tempNextDoseMM / MINUTES_IN_HOUR);

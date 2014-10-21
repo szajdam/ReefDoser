@@ -23,6 +23,7 @@ class LoggerClass
 	LoggerClass();
 	void flush();
 	void appendLog(String msg);
+	void log(String msg);
 };
 
 

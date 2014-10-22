@@ -18,7 +18,7 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 		EepromAddrRemainDose = EEPROM_ADDR_REMAIN_DOSE_PA;
 		EepromAddrDailyDose = EEPROM_ADDR_DAILY_DOSE_PA;
 		EepromAddrPumpPerf = EEPROM_ADDR_PUMP_PERF_PA;
-		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PB;
+		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PA;
 		EepromAddrLastDoseHH = EEPROM_ADDR_HH_PA;
 		EepromAddrLastDoseMM = EEPROM_ADDR_MM_PA;
 		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY;
@@ -372,7 +372,7 @@ boolean Pump::setNextDosingTime() {
 	/*calculate dosing delay*/
 
 	NextDosingTime.Day = CurrentTime->Day;
-	if(CurrentTime->Minute < (uint8_t)(PumpDelay - 1)) {
+	if(CurrentTime->Minute + 1 < (uint8_t)PumpDelay) {
 		NextDosingTime.Hour = (uint8_t)max(max(DAILY_DOSES_START_HOUR, CurrentTime->Hour), LastDosingTime.Hour + DAILY_DOSES_MIN_DELAY_HH);
 		NextDosingTime.Minute = (uint8_t)PumpDelay;
 	}

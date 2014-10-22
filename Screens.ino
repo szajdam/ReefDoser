@@ -310,7 +310,7 @@ void drawMainMenuScreen(float temp, String time, String date) {
 	drawButtonWLabel(10, 40, 60, 90, "Pumps", 1);
 	drawButtonWLabel(70, 40, 120, 90, "Time", 1);
 	drawButtonWLabel(130, 40, 180, 90, "Date", 1);
-	drawButtonWLabel(10, 100, 60, 150, "Defaults", 1);
+	drawButtonWLabel(10, 100, 60, 150, "Default", 1);
 	drawButtonWLabel(70, 100, 120, 150, "List", 1);
 	drawButtonWLabel(260, 40, 310, 100, "Exit", 1);
 	drawMillis();

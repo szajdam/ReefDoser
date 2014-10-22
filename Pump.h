@@ -74,8 +74,8 @@
 #define PUMP_PERF_DEFAULT_PC 				1000
 
 #define PUMP_DELAY_DEFAULT_PA 				0
-#define PUMP_DELAY_DEFAULT_PB 				15
-#define PUMP_DELAY_DEFAULT_PC 				30
+#define PUMP_DELAY_DEFAULT_PB 				30
+#define PUMP_DELAY_DEFAULT_PC 				45
 
 //EEPROM pump addresses
 //remaining doses (ml)

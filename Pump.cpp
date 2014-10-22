@@ -18,9 +18,9 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 		EepromAddrRemainDose = EEPROM_ADDR_REMAIN_DOSE_PA;
 		EepromAddrDailyDose = EEPROM_ADDR_DAILY_DOSE_PA;
 		EepromAddrPumpPerf = EEPROM_ADDR_PUMP_PERF_PA;
-		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PA_TO_PB;
-		EepromAddrHH = EEPROM_ADDR_HH_PA;
-		EepromAddrMM = EEPROM_ADDR_MM_PA;
+		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PB;
+		EepromAddrLastDoseHH = EEPROM_ADDR_HH_PA;
+		EepromAddrLastDoseMM = EEPROM_ADDR_MM_PA;
 		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY;
 		
 		DailyDose = DAILY_DOSE_DEFAULT_PA;
@@ -33,9 +33,9 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 		EepromAddrRemainDose = EEPROM_ADDR_REMAIN_DOSE_PB;
 		EepromAddrDailyDose = EEPROM_ADDR_DAILY_DOSE_PB;
 		EepromAddrPumpPerf = EEPROM_ADDR_PUMP_PERF_PB;
-		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PA_TO_PB;
-		EepromAddrHH = EEPROM_ADDR_HH_PB;
-		EepromAddrMM = EEPROM_ADDR_MM_PB;
+		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PB;
+		EepromAddrLastDoseHH = EEPROM_ADDR_HH_PB;
+		EepromAddrLastDoseMM = EEPROM_ADDR_MM_PB;
 		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY;
 		
 		DailyDose = DAILY_DOSE_DEFAULT_PB;
@@ -48,9 +48,9 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 		EepromAddrRemainDose = EEPROM_ADDR_REMAIN_DOSE_PC;
 		EepromAddrDailyDose = EEPROM_ADDR_DAILY_DOSE_PC;
 		EepromAddrPumpPerf = EEPROM_ADDR_PUMP_PERF_PC;
-		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PB_TO_PC;
-		EepromAddrHH = EEPROM_ADDR_HH_PC;
-		EepromAddrMM = EEPROM_ADDR_MM_PC;
+		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PC;
+		EepromAddrLastDoseHH = EEPROM_ADDR_HH_PC;
+		EepromAddrLastDoseMM = EEPROM_ADDR_MM_PC;
 		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY;
 		
 		DailyDose = DAILY_DOSE_DEFAULT_PC;
@@ -71,21 +71,22 @@ void Pump::initEEPROM() {
 	switch (PumpIndex)	{	
 		case INDEX_PUMP_A:
 		DailyDose = DAILY_DOSE_DEFAULT_PA;
+		PumpDelay = PUMP_DELAY_DEFAULT_PA;
 		break;
 		case INDEX_PUMP_B:
 		DailyDose = DAILY_DOSE_DEFAULT_PB;
+		PumpDelay = PUMP_DELAY_DEFAULT_PB;
 		break;
 		case INDEX_PUMP_C:
 		DailyDose = DAILY_DOSE_DEFAULT_PC;
+		PumpDelay = PUMP_DELAY_DEFAULT_PC;
 		break;
 	}
 	EEPROMCust.writeUInt(EepromAddrDailyDose, DailyDose);
-	EEPROMCust.writeUInt(EepromAddrHH, 1);
-	EEPROMCust.writeUInt(EepromAddrMM, 1);
+	EEPROMCust.writeUInt(EepromAddrLastDoseHH, 1);
+	EEPROMCust.writeUInt(EepromAddrLastDoseMM, 1);
 	EEPROMCust.writeUInt(EepromAddrLastDoseDay, CurrentTime->Day - 1);
-	if(EepromAddrPumpDelay > 0){
-		EEPROMCust.writeUInt(EepromAddrPumpDelay, 15);
-	}
+	EEPROMCust.writeUInt(EepromAddrPumpDelay, PumpDelay);
 	EEPROMCust.writeUInt(EepromAddrRemainDose, 0);
 	EEPROMCust.writeUInt(EepromAddrPumpPerf, 1000);
 	delay(50);
@@ -117,8 +118,8 @@ void Pump::init(){
 	logger.flush();
 	
 	LastDosingTime.Day = EEPROMCust.readUInt(EepromAddrLastDoseDay);
-	LastDosingTime.Hour = EEPROMCust.readUInt(EepromAddrHH);
-	LastDosingTime.Minute = EEPROMCust.readUInt(EepromAddrMM);
+	LastDosingTime.Hour = EEPROMCust.readUInt(EepromAddrLastDoseHH);
+	LastDosingTime.Minute = EEPROMCust.readUInt(EepromAddrLastDoseMM);
 	
 	logger.appendLog("Pump::init() LastDosingTime.Day");
 	logger.appendLog((String)LastDosingTime.Day);
@@ -154,44 +155,17 @@ boolean Pump::advanceDay() {
 		this->defineDailyDosing(RemainingDailyDose);
 		
 		LastDosingTime.Day = CurrentTime->Day;
+		LastDosingTime.Hour = 0;
+		LastDosingTime.Minute = 0;
+		
 		EEPROMCust.writeUInt(EepromAddrLastDoseDay, LastDosingTime.Day);
+		EEPROMCust.writeUInt(EepromAddrLastDoseHH, LastDosingTime.Hour);
+		EEPROMCust.writeUInt(EepromAddrLastDoseMM, LastDosingTime.Minute);
 		
-		uint8_t nextDosingHH = 0;
-		unsigned int nextDosingMM = 0;
-		/*=TIME(MAX(HOUR(curr_time); DAILY_DOSES_START_HOUR);IF((HOUR(curr_time) >= DAILY_DOSES_START_HOUR);MINUTE(curr_time) + 1;pump_delay_a);0)
-		=TIME(HOUR(E3);MINUTE(E3) + pump_delay_b;0)*/
-		
-		if(DependentToPump == NULL || (DependentToPump->LastDosingTime.Day < CurrentTime->Day)) {
-			nextDosingHH = max(CurrentTime->Hour, DAILY_DOSES_START_HOUR);
-			nextDosingMM = (CurrentTime->Hour >= DAILY_DOSES_START_HOUR ?
-			(CurrentTime->Minute + 5) :
-			0);
+		if(!setNextDosingTime()) {
+			logger.log("Pump::advanceDay() No dosing for Today");
 		}
-		else {
-			nextDosingHH = DependentToPump->NextDosingTime.Hour;
-			nextDosingMM = DependentToPump->NextDosingTime.Minute + PumpDelay;
-			
-		}
-		/*60 minutes handling*/
-		if(nextDosingMM < MINUTES_IN_HOUR) {
-			NextDosingTime.Hour = nextDosingHH;
-			NextDosingTime.Minute = nextDosingMM;	
-		}
-		else {
-			NextDosingTime.Hour = (nextDosingHH + floor((float)nextDosingMM / MINUTES_IN_HOUR));
-			NextDosingTime.Minute = (nextDosingMM % MINUTES_IN_HOUR);	
-		}
-		
-		if(NextDosingTime.Hour < 24) {
-			NextDosingTime.Day = CurrentTime->Day;
-		}
-		else { //setup for the next day
-			NextDosingTime.Day = CurrentTime->Day + 1;
-			
-			NextDosingTime.Hour = DAILY_DOSES_START_HOUR;
-			NextDosingTime.Minute = PumpDelay;
-		}
-		
+				
 		this->changeState(STATE_DAY_ADVANCED);
 		return true;
 	}
@@ -205,19 +179,16 @@ void Pump::addDependentPump(Pump &dependentPump){
 
 void Pump::defineDailyDosing(int dailyDose) {
 	if(dailyDose > 0) {
-		if(CurrentTime->Hour < DAILY_DOSES_END_HOUR) {
+		if(CurrentTime->Hour < (uint8_t)(DAILY_DOSES_END_HOUR - 2)) {
 			/*dailydose/max(minimaldosage;(dailydose/20-7))*/
-			DailyDosesNo =  round((float)dailyDose / max(DAILY_DOSES_MIN_DOSE, round((float)dailyDose / (DAILY_DOSES_END_HOUR - max(DAILY_DOSES_START_HOUR, CurrentTime->Hour)))));
-			DailyDoseDelay = max(DAILY_DOSES_MIN_DELAY, (round((((float)DAILY_DOSES_END_HOUR - max(DAILY_DOSES_START_HOUR, CurrentTime->Hour))/DailyDosesNo)*MINUTES_IN_HOUR)));
+			DailyDosesNo =  (unsigned int)round((float)dailyDose / max(DAILY_DOSES_MIN_DOSE, round((float)dailyDose / (DAILY_DOSES_END_HOUR - max(DAILY_DOSES_START_HOUR, CurrentTime->Hour)))));
 		}
 		else {
 			DailyDosesNo = 2;
-			DailyDoseDelay = DAILY_DOSES_MIN_DELAY;
 		}
 	}
 	else {
 		DailyDosesNo = 0;
-		DailyDoseDelay = DAILY_DOSES_MIN_DELAY;
 	}
 	
 }
@@ -255,11 +226,11 @@ void Pump::calibrate() {
 	this->stopPump();
 	this->changeState(STATE_IDLE);
 }
-void Pump::setCalibration(int pumpPerformance) {
+void Pump::setCalibration(unsigned int pumpPerformance) {
 	PumpPerf = pumpPerformance;
 	EEPROMCust.writeUInt(EepromAddrPumpPerf, pumpPerformance);
 }
-void Pump::setDosage(int dosage) {
+void Pump::setDosage(unsigned int dosage) {
 	DailyDose = dosage;
 	EEPROMCust.writeUInt(EepromAddrDailyDose, dosage);
 }
@@ -297,17 +268,13 @@ int Pump::triggerDose() {
 }
 
 boolean Pump::checkDosingStart() {
-	if(PumpState == STATE_INITIALIZED || PumpState == STATE_DAY_ADVANCED || PumpState == STATE_IDLE) {
+	if(PumpState >= STATE_INITIALIZED && PumpState <= STATE_DAY_ADVANCED) {
 		/*check to dose remainder*/
 		if(RemainingDailyDose > 0){
 			/*check date and time*/
 			if(NextDosingTime.Day == CurrentTime->Day 
-				&& NextDosingTime.Hour == CurrentTime->Hour 
+				&& NextDosingTime.Hour <= CurrentTime->Hour 
 				&& NextDosingTime.Minute <= CurrentTime->Minute) {
-				return true;
-			}
-			else if(NextDosingTime.Day == CurrentTime->Day
-				&& NextDosingTime.Hour < CurrentTime->Hour) {
 				return true;
 			}
 		}
@@ -317,7 +284,7 @@ boolean Pump::checkDosingStart() {
 unsigned long Pump::checkDosingEnd() {
 	if(PumpState == STATE_DOSING) {
 		unsigned long currentMillis = millis();
-		unsigned long millisToDose = min((unsigned long)round((double)(DailyDose * PumpPerf) / DailyDosesNo), (unsigned long)RemainingDailyDose * PumpPerf);  /*remaning dose can be lower than calculated dosage;*/
+		unsigned long millisToDose = min((unsigned long)round(((double)DailyDose * PumpPerf) / DailyDosesNo), (unsigned long)RemainingDailyDose * PumpPerf);  /*remaning dose can be lower than calculated dosage;*/
 		unsigned long millisDiff = (currentMillis - PumpStateMillis);
 		
 		logger.appendLog("Pump::checkDosingEnd() millisToDose");
@@ -368,11 +335,11 @@ void Pump::doseEnd(unsigned long dosedMillis) {
 		EEPROMCust.updateUInt(EepromAddrLastDoseDay, LastDosingTime.Day);
 	}
 	//set last dose time
-	if(EEPROMCust.readUInt(EepromAddrHH) != LastDosingTime.Hour) {
-		EEPROMCust.updateUInt(EepromAddrHH, LastDosingTime.Hour);
+	if(EEPROMCust.readUInt(EepromAddrLastDoseHH) != LastDosingTime.Hour) {
+		EEPROMCust.updateUInt(EepromAddrLastDoseHH, LastDosingTime.Hour);
 	}
-	if(EEPROMCust.readUInt(EepromAddrMM) != LastDosingTime.Minute) {
-		EEPROMCust.updateUInt(EepromAddrMM, LastDosingTime.Minute);
+	if(EEPROMCust.readUInt(EepromAddrLastDoseMM) != LastDosingTime.Minute) {
+		EEPROMCust.updateUInt(EepromAddrLastDoseMM, LastDosingTime.Minute);
 	}
 
 	if(RemainingDailyDose > 0) {
@@ -382,7 +349,10 @@ void Pump::doseEnd(unsigned long dosedMillis) {
 			this->changeState(STATE_DOSING_COMPLETED);	
 		}
 	}
-	else {
+	else {		
+		NextDosingTime.Day = CurrentTime->Day + 1;
+		NextDosingTime.Hour = DAILY_DOSES_START_HOUR;
+		NextDosingTime.Minute = PumpDelay;
 		this->changeState(STATE_DOSING_COMPLETED);
 	}
 	
@@ -399,95 +369,31 @@ void Pump::stopPump() {
 }
 boolean Pump::setNextDosingTime() {
 
-	/*=TIME(HOUR(C6);MINUTE(C6)+dose_del_b+MAX(pump_delay_b-IF(HOUR(TIME(last_dose+dose_del_b))>HOUR(E6);60-MINUTE(E6)+MINUTE(last_dose+dose_del_b));MINUTE(last_dose+dose_del_b))-MINUTE(E6));0);0)*/
-	
-	uint8_t nextDoseHH = LastDosingTime.Hour;
-	uint8_t nextDoseMM = LastDosingTime.Minute;
-	
 	/*calculate dosing delay*/
-	if((nextDoseMM + DailyDoseDelay) >= MINUTES_IN_HOUR) {
-		nextDoseHH = nextDoseHH + floor((float)(nextDoseMM + DailyDoseDelay) / MINUTES_IN_HOUR);
-		nextDoseMM = ((nextDoseMM + DailyDoseDelay) % MINUTES_IN_HOUR);
+
+	NextDosingTime.Day = CurrentTime->Day;
+	if(CurrentTime->Minute < (uint8_t)(PumpDelay - 1)) {
+		NextDosingTime.Hour = (uint8_t)max(max(DAILY_DOSES_START_HOUR, CurrentTime->Hour), LastDosingTime.Hour + DAILY_DOSES_MIN_DELAY_HH);
+		NextDosingTime.Minute = (uint8_t)PumpDelay;
 	}
 	else {
-		nextDoseHH = nextDoseHH;
-		nextDoseMM = (nextDoseMM + DailyDoseDelay);
+		NextDosingTime.Hour = max(max(DAILY_DOSES_START_HOUR, CurrentTime->Hour + 1), LastDosingTime.Hour + DAILY_DOSES_MIN_DELAY_HH);
+		NextDosingTime.Minute = (uint8_t)PumpDelay;
 	}
-	logger.appendLog("Pump::setNextDosingTime() nextDoseHH");
-	logger.appendLog((String)nextDoseHH);
-	logger.appendLog("nextDoseMM");
-	logger.appendLog((String)nextDoseMM);
+	logger.appendLog("Pump::setNextDosingTime() NextDosingTime.Hour");
+	logger.appendLog((String)NextDosingTime.Hour);
+	logger.appendLog(".Minute");
+	logger.appendLog((String)NextDosingTime.Minute);
 	logger.flush();
 	
-	uint8_t depNextDosingHH = DependentToPump->NextDosingTime.Hour;
-	uint8_t depNextDosingMM = DependentToPump->NextDosingTime.Minute;
-	
-	logger.appendLog("Pump::setNextDosingTime() depNextDosingHH");
-	logger.appendLog((String)depNextDosingHH);
-	logger.appendLog("depNextDosingMM");
-	logger.appendLog((String)depNextDosingMM);
-	logger.flush();
-	
-	/*calculate pump dependency delay*/
-	if(nextDoseHH > depNextDosingHH){
-		
-		logger.log("Pump::setNextDosingTime() nextDoseHH > depNextDosingHH");
-		
-		unsigned int tempNextDoseMM = nextDoseMM + max(PumpDelay - (MINUTES_IN_HOUR - depNextDosingMM + nextDoseMM), 0);
-		if(tempNextDoseMM >= MINUTES_IN_HOUR) {
-			nextDoseHH = nextDoseHH + floor((float)tempNextDoseMM / MINUTES_IN_HOUR);
-			nextDoseMM = (tempNextDoseMM % MINUTES_IN_HOUR);
-		}
-		else {
-			nextDoseHH = nextDoseHH;
-			nextDoseMM = tempNextDoseMM;
-		}
-	}
-	else if(nextDoseHH < depNextDosingHH){
-		
-		logger.log("Pump::setNextDosingTime() nextDoseHH < depNextDosingHH");
-		
-		if((MINUTES_IN_HOUR - nextDoseMM + depNextDosingMM) >= PumpDelay 
-			|| nextDoseHH < (depNextDosingHH + 1)) {
-			/*nothing*/
-		}
-		else {
-			if(depNextDosingMM + PumpDelay >= MINUTES_IN_HOUR) {
-				nextDoseHH = depNextDosingHH + floor((float)(depNextDosingMM + PumpDelay) / MINUTES_IN_HOUR);
-				nextDoseMM = ((depNextDosingMM + PumpDelay) % MINUTES_IN_HOUR);
-			}
-			else {
-				nextDoseHH = depNextDosingHH;
-				nextDoseMM = depNextDosingMM + PumpDelay;
-			}
-		}
-	}
-	else { /*nextDoseHH == depNextDosingHH*/
-		
-		logger.log("Pump::setNextDosingTime() nextDoseHH == depNextDosingHH");
-		
-		unsigned int tempNextDoseMM = nextDoseMM + max(PumpDelay - (nextDoseMM - depNextDosingMM), 0);
-		if(tempNextDoseMM >= MINUTES_IN_HOUR) {
-			nextDoseHH = nextDoseHH + floor((float)tempNextDoseMM / MINUTES_IN_HOUR);
-			nextDoseMM = (tempNextDoseMM % MINUTES_IN_HOUR);
-		}
-		else {
-			nextDoseHH = nextDoseHH;
-			nextDoseMM = tempNextDoseMM + tempNextDoseMM;
-		}
-	}
-	if(nextDoseHH < 24) {
-		NextDosingTime.Day = CurrentTime->Day;
-		NextDosingTime.Hour = nextDoseHH;
-		NextDosingTime.Minute = nextDoseMM;
-		return true;
-	}
-	else {
+	if(NextDosingTime.Hour >= 23) {
 		NextDosingTime.Day = CurrentTime->Day + 1;
-		NextDosingTime.Hour = DAILY_DOSES_START_HOUR;
-		NextDosingTime.Minute = PumpDelay;
+		NextDosingTime.Hour = (uint8_t)DAILY_DOSES_START_HOUR;
+		NextDosingTime.Minute = (uint8_t)PumpDelay;
+		return false;
 	}
-	return false;
+	
+	return true;
 }
 
 unsigned int Pump::getRemainingDose() {
@@ -556,7 +462,7 @@ String Pump::to2Digits(String number) {
 	return String(number);
 }
 
-void Pump::setDailyDose(int value) {
+void Pump::setDailyDose(unsigned int value) {
 	DailyDose = value;
 	EEPROMCust.writeUInt(EepromAddrDailyDose, DailyDose);
 }

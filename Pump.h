@@ -49,26 +49,33 @@
 
 
 #define TIMEOUT_CALIBRATION_DOSE			5000
-#define TIMEOUT_PIPES_FILL					(long)20000
+#define TIMEOUT_PIPES_FILL					((long)20000)
 
-#define TIME_AN_HOUR						(long)60*60*1000
-#define MINUTES_IN_HOUR						(unsigned int)60
+#define TIME_AN_HOUR						((long)60*60*1000)
+#define MINUTES_IN_HOUR						((unsigned int)60)
 
-#define DAILY_DOSES							12
-#define DAILY_DOSES_MIN_DELAY				60
+#define DAILY_DOSES_NO						12
+
+#define DAILY_DOSES_MIN_DELAY_HH			1
+#define DAILY_DOSES_MIN_DELAY_MM			(DAILY_DOSES_MIN_DELAY_HH * MINUTES_IN_HOUR)
+
 #define DAILY_DOSES_MIN_DOSE				2
 #define DAILY_DOSES_RESET_HOUR				1
 #define DAILY_DOSES_START_HOUR				8
 #define DAILY_DOSES_END_HOUR				20
 
-
 #define DAILY_DOSE_DEFAULT_PA 				112
 #define DAILY_DOSE_DEFAULT_PB 				18
 #define DAILY_DOSE_DEFAULT_PC 				160
 
+
 #define PUMP_PERF_DEFAULT_PA 				1000
 #define PUMP_PERF_DEFAULT_PB 				1000
 #define PUMP_PERF_DEFAULT_PC 				1000
+
+#define PUMP_DELAY_DEFAULT_PA 				0
+#define PUMP_DELAY_DEFAULT_PB 				15
+#define PUMP_DELAY_DEFAULT_PC 				30
 
 //EEPROM pump addresses
 //remaining doses (ml)
@@ -92,9 +99,9 @@
 #define EEPROM_ADDR_PUMP_PERF_PC			34
 
 //delay between pumps (s)
-#define EEPROM_ADDR_PUMP_DELAY_PC_TO_PA		40
-#define EEPROM_ADDR_PUMP_DELAY_PA_TO_PB 	42
-#define EEPROM_ADDR_PUMP_DELAY_PB_TO_PC		44
+#define EEPROM_ADDR_PUMP_DELAY_PA			40
+#define EEPROM_ADDR_PUMP_DELAY_PB 			42
+#define EEPROM_ADDR_PUMP_DELAY_PC			44
 
 
 
@@ -127,7 +134,7 @@ class Pump
 	
 	
 	//eeprom addresses for the pump
-	uint8_t EepromAddrRemainDose, EepromAddrDailyDose, EepromAddrPumpPerf, EepromAddrPumpDelay, EepromAddrHH, EepromAddrMM, EepromAddrLastDoseDay;
+	uint8_t EepromAddrRemainDose, EepromAddrDailyDose, EepromAddrPumpPerf, EepromAddrPumpDelay, EepromAddrLastDoseHH, EepromAddrLastDoseMM, EepromAddrLastDoseDay;
 	LoggerClass logger;
 	//pump actual state
 	unsigned int PumpState;
@@ -138,7 +145,7 @@ class Pump
 	unsigned int RemainingDailyDose; //ml
 	unsigned int AlreadyDosed; //ml
 	unsigned int DailyDosesNo; //times
-	unsigned int DailyDoseDelay; //minutes between dosages
+	//unsigned int DailyDoseDelay; //minutes between dosages
 	unsigned int PumpDelay; //minutes between pumps;
 	
 	Pump *DependentToPump;
@@ -183,10 +190,10 @@ class Pump
 	unsigned int getRemainingDose();
 	doseTime_t getNextDosingTime();
 	void calibrate();
-	void setCalibration(int);
-	void setDosage(int);
+	void setCalibration(unsigned int);
+	void setDosage(unsigned int);
 	void fillPipes();
-	void setDailyDose(int);
+	void setDailyDose(unsigned int);
 	int scheduledDose();
 	int triggerDose();
 	

@@ -139,12 +139,12 @@ class Pump
 	//pump actual state
 	unsigned int PumpState;
 	unsigned long PumpStateMillis;
-	unsigned int LastVolumePumped;
+	int LastVolumePumped;
 	doseTime_t LastDosingTime;
 	doseTime_t NextDosingTime;
-	unsigned int RemainingDailyDose; //ml
-	unsigned int AlreadyDosed; //ml
-	unsigned int DailyDosesNo; //times
+	int RemainingDailyDose; //ml
+	int AlreadyDosed; //ml
+	int DailyDosesNo; //times
 	//unsigned int DailyDoseDelay; //minutes between dosages
 	unsigned int PumpDelay; //minutes between pumps;
 	
@@ -170,10 +170,11 @@ class Pump
 	boolean advanceDay();
 	boolean setNextDosingTime();
 	
-	unsigned long checkDosingEnd();
+	unsigned long getDosingMillis();
 	void doseEnd(unsigned long);
 	
 	String to2Digits(String number);
+	unsigned int castToUInt(int value);
 	
 	public:
 	Pump();
@@ -207,6 +208,7 @@ class Pump
 	unsigned int getDailyDose();
 	unsigned int getPumpPerformance();
 	String getEEpromData();
+	
 };
 
 

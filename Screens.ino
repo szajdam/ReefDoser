@@ -768,9 +768,9 @@ void readNumKeyScreen(int x, int y){
 		}
 	}
 }
-void readPumpCalibScreen(int x, int y){
+void readPumpCalibScreen(int x, int y){ 
 	if ((y>=110) && (y<=160)) {
-		if ((x>=80) && (x<=240)) {
+		if ((x>=80) && (x<=240)) { 
 			pressButton(80, 110, 240, 160);
 			if(currentMenu == PUMP_PRE_CALIBRATE_A){
 				choosenMenu = NUM_KEY_PUMP_CALIBRATE_A;
@@ -1089,6 +1089,7 @@ void chooseActionNumKeyPumpsCalibrate(int x, int y) {
 			pumpA.setCalibration(numKeyResult);
 			//drawLog("pumpA.setCalibration " + numKeyResult);
 			currentMenu = PUMP_PRE_CALIBRATE_A;
+			choosenMenu = PUMPS_MENU_SCREEN;
 		}
 		else if (choosenMenu == PUMP_PRE_CALIBRATE_B){
 			previousMenu = currentMenu;
@@ -1096,6 +1097,7 @@ void chooseActionNumKeyPumpsCalibrate(int x, int y) {
 			pumpB.setCalibration(numKeyResult);
 			//drawLog("pumpB.setCalibration " + numKeyResult);
 			currentMenu = PUMP_PRE_CALIBRATE_B;
+			choosenMenu = PUMPS_MENU_SCREEN;
 		}
 		else if (choosenMenu == PUMP_PRE_CALIBRATE_C){
 			previousMenu = currentMenu;
@@ -1103,6 +1105,7 @@ void chooseActionNumKeyPumpsCalibrate(int x, int y) {
 			pumpC.setCalibration(numKeyResult);
 			//drawLog("pumpC.setCalibration " + numKeyResult);
 			currentMenu = PUMP_PRE_CALIBRATE_C;
+			choosenMenu = PUMPS_MENU_SCREEN;
 		}
 		else {
 			//drawLog("calibration - no setup " + numKeyResult);

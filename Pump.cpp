@@ -150,7 +150,7 @@ boolean Pump::advanceDay() {
 		
 		AlreadyDosed = 0;
 		RemainingDailyDose = DailyDose + RemainingDailyDose;
-		EEPROMCust.writeUInt(EepromAddrRemainDose, RemainingDailyDose);
+		EEPROMCust.writeUInt(EepromAddrRemainDose, castToUInt(RemainingDailyDose));
 		
 		this->defineDailyDosing(RemainingDailyDose);
 		
@@ -226,9 +226,9 @@ void Pump::calibrate() {
 	this->stopPump();
 	this->changeState(STATE_IDLE);
 }
-void Pump::setCalibration(unsigned int pumpPerformance) {
-	PumpPerf = pumpPerformance;
-	EEPROMCust.writeUInt(EepromAddrPumpPerf, pumpPerformance);
+void Pump::setCalibration(unsigned int mililitersDosed) { //ml*10	
+	PumpPerf = round(((float)TIMEOUT_CALIBRATION_DOSE / mililitersDosed) * 10);
+	EEPROMCust.writeUInt(EepromAddrPumpPerf, PumpPerf);
 }
 void Pump::setDosage(unsigned int dosage) {
 	DailyDose = dosage;
@@ -247,21 +247,27 @@ int Pump::scheduledDose(){
 	}
 	/*start dosing*/
 	if(this->checkDosingStart()) {
+		unsigned long doseMillis = this->getDosingMillis();
 		this->doseStart();
+		delay(doseMillis);
+		this->doseEnd(doseMillis);
 	}
-	else {
-		unsigned long dosedMillis = this->checkDosingEnd();
-		if(dosedMillis > 0) {
-			this->doseEnd(dosedMillis);
-		}
-	}
+// 	else {
+// 		
+// 		if(dosedMillis > 0) {
+// 			this->doseEnd(dosedMillis);
+// 		}
+// 	}
 	
 	return PumpState;
 }
 
 int Pump::triggerDose() {
 	if(RemainingDailyDose > 0) {
+		unsigned long doseMillis = this->getDosingMillis();
 		this->doseStart();
+		delay(doseMillis);
+		this->doseEnd(doseMillis);
 	}
 	
 	return PumpState;
@@ -281,25 +287,25 @@ boolean Pump::checkDosingStart() {
 	}
 	return false;
 }
-unsigned long Pump::checkDosingEnd() {
+unsigned long Pump::getDosingMillis() {
 	if(PumpState == STATE_DOSING) {
-		unsigned long currentMillis = millis();
-		unsigned long millisToDose = min((unsigned long)round(((double)DailyDose * PumpPerf) / DailyDosesNo), (unsigned long)RemainingDailyDose * PumpPerf);  /*remaning dose can be lower than calculated dosage;*/
-		unsigned long millisDiff = (currentMillis - PumpStateMillis);
+		//unsigned long currentMillis = millis();
+		unsigned long millisToDose = min((unsigned long)round(((double)DailyDose * PumpPerf) / DailyDosesNo), castToUInt(RemainingDailyDose) * PumpPerf);  /*remaning dose can be lower than calculated dosage;*/
+		//unsigned long millisDiff = (currentMillis - PumpStateMillis);
 		
-		logger.appendLog("Pump::checkDosingEnd() millisToDose");
+		logger.appendLog("Pump::getDosingMillis() millisToDose");
 		logger.appendLog((String)millisToDose);
-		logger.appendLog("millisDiff");
-		logger.appendLog((String)millisDiff);
+		//logger.appendLog("millisDiff");
+		//logger.appendLog((String)millisDiff);
 		logger.flush();
-		
-		if(millisDiff >= millisToDose) {
-			logger.log("Pump::checkDosingEnd() millisDiff >= millisToDose");
-			return millisDiff;
-		}
-		else {
-			return 0;
-		}
+		return millisToDose;
+		//if(millisDiff >= millisToDose) {
+		//	logger.log("Pump::getDosingMillis() millisDiff >= millisToDose");
+		//	return millisDiff;
+		//}
+		//else {
+		//	return 0;
+		//}
 	}
 	return 0;
 }
@@ -320,7 +326,7 @@ void Pump::doseEnd(unsigned long dosedMillis) {
 	
 	//set remaining Dose
 	RemainingDailyDose = RemainingDailyDose - LastVolumePumped;
-	EEPROMCust.updateUInt(EepromAddrRemainDose, RemainingDailyDose);
+	EEPROMCust.updateUInt(EepromAddrRemainDose, castToUInt(RemainingDailyDose));
 	
 	logger.appendLog("RemainingDailyDose");
 	logger.appendLog((String)RemainingDailyDose);
@@ -413,17 +419,17 @@ unsigned int Pump::getPumpPerformance() {
 }
 
 String Pump::getEEpromData() {
-	String data = "R";
-	data = data + EEPROMCust.readUInt(EepromAddrRemainDose);
-	//data = data + " PP";
-	//data = data + EEPROMCust.readUInt(EepromAddrPumpPerf);
+	String data = "AD:";
+	data = data + AlreadyDosed;
+	data = data + " LVP:";
+	data = data + LastVolumePumped;
 	//data = data + " DD";
 	//data = data + EEPROMCust.readUInt(EepromAddrDailyDose);
 	return data;
 }
 
 unsigned int Pump::getNextDoseMl() {
-	return min((unsigned int)round((float)DailyDose / DailyDosesNo), RemainingDailyDose);
+	return min((unsigned int)round((float)DailyDose / DailyDosesNo), castToUInt(RemainingDailyDose));
 }
 
 String Pump::getLastDosingTimeStr() {
@@ -465,4 +471,11 @@ String Pump::to2Digits(String number) {
 void Pump::setDailyDose(unsigned int value) {
 	DailyDose = value;
 	EEPROMCust.writeUInt(EepromAddrDailyDose, DailyDose);
+}
+
+unsigned int Pump::castToUInt(int value) {
+	if(value > 0) {
+		return value;
+	}
+	return 0;
 }

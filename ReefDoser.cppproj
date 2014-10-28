@@ -61,30 +61,30 @@
         </avrgcc.compiler.symbols.DefSymbols>
         <avrgcc.compiler.directories.IncludePaths>
           <ListValues>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\OneWire</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\OneWire\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\Time</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\Time\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTFT</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTFT\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTouch</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTouch\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\OneWire</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\OneWire\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\Time</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\Time\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTFT</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTFT\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTouch</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTouch\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
-            <Value>C:\Users\Zosia\Documents\Arduino\libraries</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
+            <Value>D:\Private\Projekty\libraries</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
           </ListValues>
         </avrgcc.compiler.directories.IncludePaths>
         <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
@@ -107,30 +107,30 @@
         </avrgcccpp.compiler.symbols.DefSymbols>
         <avrgcccpp.compiler.directories.IncludePaths>
           <ListValues>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\OneWire</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\OneWire\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\Time</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\Time\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTFT</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTFT\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTouch</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTouch\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\OneWire</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\OneWire\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\Time</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\Time\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTFT</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTFT\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTouch</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTouch\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
-            <Value>C:\Users\Zosia\Documents\Arduino\libraries</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
+            <Value>D:\Private\Projekty\libraries</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
             <Value>
             </Value>
           </ListValues>
@@ -324,30 +324,30 @@ object_files="C:\Users\Zosia\AppData\Local\VMicro\Arduino\Builds\ReefDoser\mega_
         </avrgcc.compiler.symbols.DefSymbols>
         <avrgcc.compiler.directories.IncludePaths>
           <ListValues>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\OneWire</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\OneWire\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\Time</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\Time\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTFT</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTFT\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTouch</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTouch\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\OneWire</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\OneWire\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\Time</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\Time\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTFT</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTFT\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTouch</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTouch\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
-            <Value>C:\Users\Zosia\Documents\Arduino\libraries</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
+            <Value>D:\Private\Projekty\libraries</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
           </ListValues>
         </avrgcc.compiler.directories.IncludePaths>
         <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
@@ -370,30 +370,30 @@ object_files="C:\Users\Zosia\AppData\Local\VMicro\Arduino\Builds\ReefDoser\mega_
         </avrgcccpp.compiler.symbols.DefSymbols>
         <avrgcccpp.compiler.directories.IncludePaths>
           <ListValues>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\OneWire</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\OneWire\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\Time</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\Time\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTFT</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTFT\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTouch</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\UTouch\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control\utility</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\libraries</Value>
-            <Value>D:\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\cores\arduino</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\variants\mega</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\OneWire</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\OneWire\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries\Wire\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\Time</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\Time\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\DS1307RTC\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTFT</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTFT\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTouch</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\UTouch\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries\dallas-temperature-control\utility</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\libraries</Value>
+            <Value>D:\Private\Arduino\arduino-1.5.6-r2\hardware\arduino\avr\libraries</Value>
             <Value>C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers</Value>
-            <Value>C:\Users\Zosia\Documents\Arduino\libraries</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
-            <Value>d:\arduino\arduino-1.5.6-r2\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
+            <Value>D:\Private\Projekty\libraries</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\include\avr\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\avr\</Value>
+            <Value>d:\private\arduino\arduino-1.5.6-r2\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
             <Value>
             </Value>
           </ListValues>

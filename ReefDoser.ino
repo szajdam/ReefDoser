@@ -22,10 +22,12 @@ int stCurrentLen=0;
 char stLast[20]="";
 
 unsigned long BigLoopLastMillis = millis();
-unsigned long SmallLoopLastMillis = millis();
+unsigned long MidLoopLastMillis = millis();
+//unsigned long SmallLoopLastMillis = millis();
 
-unsigned long BigLoopMillis = (unsigned long)10*1000; //10 seconds
-unsigned long SmallLoopMillis = (unsigned long)500; //1/2 second
+#define BIG_LOOP_MILLIS		(unsigned long)5*1000
+#define MID_LOOP_MILLIS		(unsigned int)1000
+//#define SMALL_LOOP_MILLIS	(unsigned long)100
 
 ThermoMeter TMeter;
 
@@ -35,30 +37,31 @@ void setup(){
 	readTime();
 	TMeter.init();
 	scrInit();
-	drawMainScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 	delay(1000);
+	drawMainScreen(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
 	updatePumpsStatus();
 }
 
 
 void loop() {
-	if(millis() - SmallLoopLastMillis >= SmallLoopMillis) {
-		SmallLoopLastMillis = millis();
-		drawMillis(millis());
-		chooseAction();
-		dose();
-	
-		//wait to receive full loop within a second 
-	
-		if (millis() - BigLoopLastMillis >= BigLoopMillis) {
-			BigLoopLastMillis = millis();
-			readTime();
+	//if(millis() - SmallLoopLastMillis >= SMALL_LOOP_MILLIS) {
+		//SmallLoopLastMillis = millis();
+				
+		if(millis() - MidLoopLastMillis >= MID_LOOP_MILLIS) {
+			MidLoopLastMillis = millis();
+			chooseAction();
 			drawBar(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
-			updatePumpsStatus();
-		
+			readTime();
+			
+			if (millis() - BigLoopLastMillis >= BIG_LOOP_MILLIS) {
+				BigLoopLastMillis = millis();
+				dose();
+				updatePumpsStatus();
+				drawMillis(millis());				
+			}
 		}
 	
-	}
+	//}
 }
 
 

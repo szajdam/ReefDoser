@@ -21,9 +21,11 @@ char stCurrent[20]="";
 int stCurrentLen=0;
 char stLast[20]="";
 
-unsigned long LastMillis = millis();
+unsigned long BigLoopLastMillis = millis();
+unsigned long SmallLoopLastMillis = millis();
 
-unsigned long LoopMillis = (unsigned long)10*1000; //10 seconds
+unsigned long BigLoopMillis = (unsigned long)10*1000; //10 seconds
+unsigned long SmallLoopMillis = (unsigned long)500; //1/2 second
 
 ThermoMeter TMeter;
 
@@ -40,18 +42,23 @@ void setup(){
 
 
 void loop() {
-	drawMillis(millis());
-	chooseAction();
-	dose();
+	if(millis() - SmallLoopLastMillis >= SmallLoopMillis) {
+		SmallLoopLastMillis = millis();
+		drawMillis(millis());
+		chooseAction();
+		dose();
 	
-	//wait to receive full loop within a second 
+		//wait to receive full loop within a second 
 	
-	if (millis() - LastMillis >= LoopMillis) {
-		LastMillis = millis();
-		readTime();
-		drawBar(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
-		updatePumpsStatus();
+		if (millis() - BigLoopLastMillis >= BigLoopMillis) {
+			BigLoopLastMillis = millis();
+			readTime();
+			drawBar(TMeter.getTemperature(), getCurrentTimeStr(), getCurrentDateStr());
+			updatePumpsStatus();
+		
+		}
+	
 	}
- }
+}
 
 

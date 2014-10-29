@@ -44,11 +44,6 @@ void setup(){
 
 
 void loop() {
-	if(millis() < MidLoopLastMillis) { //if overflow of millis
-		//SmallLoopLastMillis = millis();
-		MidLoopLastMillis = millis();
-		BigLoopLastMillis = millis();
-	}
 	//if(millis() - SmallLoopLastMillis >= SMALL_LOOP_MILLIS) {
 		//SmallLoopLastMillis = millis();
 				

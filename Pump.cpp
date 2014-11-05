@@ -61,6 +61,9 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 	
 	logger = LoggerClass("Pump.cpp" + getLabel());
 	
+	AlreadyDosed = 0;
+	LastVolumePumped = 0;
+	
 	this->changeState(STATE_UNDEFINED);
 	
 }
@@ -288,9 +291,9 @@ boolean Pump::checkDosingStart() {
 	return false;
 }
 unsigned long Pump::getDosingMillis() {
-	if(PumpState == STATE_DOSING) {
+	//if(PumpState == STATE_DOSING) {
 		//unsigned long currentMillis = millis();
-		unsigned long millisToDose = min((unsigned long)round(((double)DailyDose * PumpPerf) / DailyDosesNo), castToUInt(RemainingDailyDose) * PumpPerf);  /*remaning dose can be lower than calculated dosage;*/
+		unsigned long millisToDose = min((unsigned long)round(((double)DailyDose * PumpPerf) / DailyDosesNo), (unsigned long)castToUInt(RemainingDailyDose) * PumpPerf);  /*remaning dose can be lower than calculated dosage;*/
 		//unsigned long millisDiff = (currentMillis - PumpStateMillis);
 		
 		logger.appendLog("Pump::getDosingMillis() millisToDose");
@@ -306,8 +309,8 @@ unsigned long Pump::getDosingMillis() {
 		//else {
 		//	return 0;
 		//}
-	}
-	return 0;
+	//}
+	//return 0;
 }
 void Pump::doseStart() {
 	this->changeState(STATE_DOSING);

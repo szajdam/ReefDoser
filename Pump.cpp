@@ -93,9 +93,10 @@ void Pump::initEEPROM() {
 	EEPROMCust.writeUInt(EepromAddrRemainDose, 0);
 	EEPROMCust.writeUInt(EepromAddrPumpPerf, 1000);
 	delay(50);
-	init();
-	
+	init();	
 }
+
+
 void Pump::init(){
 	pinMode(PumpEn, OUTPUT);
 	pinMode(PumpIn1, OUTPUT);

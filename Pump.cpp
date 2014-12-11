@@ -21,7 +21,9 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PA;
 		EepromAddrLastDoseHH = EEPROM_ADDR_HH_PA;
 		EepromAddrLastDoseMM = EEPROM_ADDR_MM_PA;
-		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY;
+		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY_PA;
+		EepromAddrLastDoseMonth = EEPROM_ADDR_LAST_DOSE_MONTH_PA;
+		EepromAddrLastDoseYear = EEPROM_ADDR_LAST_DOSE_YEAR_PA;
 		
 		DailyDose = DAILY_DOSE_DEFAULT_PA;
 		break;
@@ -36,7 +38,10 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PB;
 		EepromAddrLastDoseHH = EEPROM_ADDR_HH_PB;
 		EepromAddrLastDoseMM = EEPROM_ADDR_MM_PB;
-		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY;
+		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY_PB;
+		EepromAddrLastDoseMonth = EEPROM_ADDR_LAST_DOSE_MONTH_PB;
+		EepromAddrLastDoseYear = EEPROM_ADDR_LAST_DOSE_YEAR_PB;
+		
 		
 		DailyDose = DAILY_DOSE_DEFAULT_PB;
 		break;
@@ -51,7 +56,10 @@ Pump::Pump(int p_pumpIndex, tmElements_t& currentTime) {
 		EepromAddrPumpDelay = EEPROM_ADDR_PUMP_DELAY_PC;
 		EepromAddrLastDoseHH = EEPROM_ADDR_HH_PC;
 		EepromAddrLastDoseMM = EEPROM_ADDR_MM_PC;
-		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY;
+		EepromAddrLastDoseDay = EEPROM_ADDR_LAST_DOSE_DAY_PC;
+		EepromAddrLastDoseMonth = EEPROM_ADDR_LAST_DOSE_MONTH_PC;
+		EepromAddrLastDoseYear = EEPROM_ADDR_LAST_DOSE_YEAR_PC;
+		
 		
 		DailyDose = DAILY_DOSE_DEFAULT_PC;
 		break;
@@ -86,9 +94,14 @@ void Pump::initEEPROM() {
 		break;
 	}
 	EEPROMCust.writeUInt(EepromAddrDailyDose, DailyDose);
+	
 	EEPROMCust.writeUInt(EepromAddrLastDoseHH, 1);
 	EEPROMCust.writeUInt(EepromAddrLastDoseMM, 1);
-	EEPROMCust.writeUInt(EepromAddrLastDoseDay, CurrentTime->Day - 1);
+	
+	EEPROMCust.writeUInt(EepromAddrLastDoseDay, CurrentTime->Day);
+	EEPROMCust.writeUInt(EepromAddrLastDoseMonth, CurrentTime->Month);
+	EEPROMCust.writeUInt(EepromAddrLastDoseYear, CurrentTime->Year);
+	
 	EEPROMCust.writeUInt(EepromAddrPumpDelay, PumpDelay);
 	EEPROMCust.writeUInt(EepromAddrRemainDose, 0);
 	EEPROMCust.writeUInt(EepromAddrPumpPerf, 1000);
@@ -121,9 +134,12 @@ void Pump::init(){
 	logger.appendLog((String)PumpDelay);
 	logger.flush();
 	
+	LastDosingTime.Year = EEPROMCust.readUInt(EepromAddrLastDoseYear);
+	LastDosingTime.Month = EEPROMCust.readUInt(EepromAddrLastDoseMonth);
 	LastDosingTime.Day = EEPROMCust.readUInt(EepromAddrLastDoseDay);
 	LastDosingTime.Hour = EEPROMCust.readUInt(EepromAddrLastDoseHH);
 	LastDosingTime.Minute = EEPROMCust.readUInt(EepromAddrLastDoseMM);
+	
 	
 	logger.appendLog("Pump::init() LastDosingTime.Day");
 	logger.appendLog((String)LastDosingTime.Day);
@@ -150,7 +166,7 @@ void Pump::init(Pump &dependentPump){
 	this->init();
 }
 boolean Pump::advanceDay() {
-	if(LastDosingTime.Day < CurrentTime->Day ) {
+	if(LastDosingTime.Day < CurrentTime->Day || LastDosingTime.Month < CurrentTime->Month || LastDosingTime.Year < CurrentTime->Year) {
 		
 		AlreadyDosed = 0;
 		RemainingDailyDose = DailyDose + RemainingDailyDose;
@@ -159,9 +175,13 @@ boolean Pump::advanceDay() {
 		this->defineDailyDosing(RemainingDailyDose);
 		
 		LastDosingTime.Day = CurrentTime->Day;
+		LastDosingTime.Month = CurrentTime->Month;
+		LastDosingTime.Year = CurrentTime->Year;
 		LastDosingTime.Hour = 0;
 		LastDosingTime.Minute = 0;
 		
+		EEPROMCust.writeUInt(EepromAddrLastDoseYear, LastDosingTime.Year);
+		EEPROMCust.writeUInt(EepromAddrLastDoseMonth, LastDosingTime.Month);
 		EEPROMCust.writeUInt(EepromAddrLastDoseDay, LastDosingTime.Day);
 		EEPROMCust.writeUInt(EepromAddrLastDoseHH, LastDosingTime.Hour);
 		EEPROMCust.writeUInt(EepromAddrLastDoseMM, LastDosingTime.Minute);
@@ -340,6 +360,15 @@ void Pump::doseEnd(unsigned long dosedMillis) {
 	LastDosingTime.Hour = CurrentTime->Hour;
 	LastDosingTime.Minute = CurrentTime->Minute;
 	
+	
+	//set last dose year
+	if(EEPROMCust.readUInt(EepromAddrLastDoseYear) != LastDosingTime.Year) {
+		EEPROMCust.updateUInt(EepromAddrLastDoseYear, LastDosingTime.Year);
+	}
+	//set last dose day
+	if(EEPROMCust.readUInt(EepromAddrLastDoseMonth) != LastDosingTime.Month) {
+		EEPROMCust.updateUInt(EepromAddrLastDoseMonth, LastDosingTime.Month);
+	}
 	//set last dose day
 	if(EEPROMCust.readUInt(EepromAddrLastDoseDay) != LastDosingTime.Day) {
 		EEPROMCust.updateUInt(EepromAddrLastDoseDay, LastDosingTime.Day);

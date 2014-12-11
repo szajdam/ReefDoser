@@ -108,20 +108,30 @@
 //time EEPROM storage addresses (LAST DOSING TIME)
 #define EEPROM_ADDR_HH_PA					50
 #define EEPROM_ADDR_MM_PA					52
+#define EEPROM_ADDR_LAST_DOSE_DAY_PA		54
+#define EEPROM_ADDR_LAST_DOSE_MONTH_PA		56
+#define EEPROM_ADDR_LAST_DOSE_YEAR_PA		58
 
-#define EEPROM_ADDR_HH_PB					54
-#define EEPROM_ADDR_MM_PB					56
+#define EEPROM_ADDR_HH_PB					60
+#define EEPROM_ADDR_MM_PB					62
+#define EEPROM_ADDR_LAST_DOSE_DAY_PB		64
+#define EEPROM_ADDR_LAST_DOSE_MONTH_PB		66
+#define EEPROM_ADDR_LAST_DOSE_YEAR_PB		68
 
-#define EEPROM_ADDR_HH_PC					58
-#define EEPROM_ADDR_MM_PC					60
+#define EEPROM_ADDR_HH_PC					70
+#define EEPROM_ADDR_MM_PC					72
+#define EEPROM_ADDR_LAST_DOSE_DAY_PC		74
+#define EEPROM_ADDR_LAST_DOSE_MONTH_PC		76
+#define EEPROM_ADDR_LAST_DOSE_YEAR_PC		78
 
-#define EEPROM_ADDR_LAST_DOSE_DAY			62
 
 typedef struct  {
 	uint8_t Second;
 	uint8_t Minute;
 	uint8_t Hour;
 	uint8_t Day;
+	uint8_t Month;
+	uint8_t Year;
 } 	doseTime_t;
 
 class Pump
@@ -134,7 +144,7 @@ class Pump
 	
 	
 	//eeprom addresses for the pump
-	uint8_t EepromAddrRemainDose, EepromAddrDailyDose, EepromAddrPumpPerf, EepromAddrPumpDelay, EepromAddrLastDoseHH, EepromAddrLastDoseMM, EepromAddrLastDoseDay;
+	uint8_t EepromAddrRemainDose, EepromAddrDailyDose, EepromAddrPumpPerf, EepromAddrPumpDelay, EepromAddrLastDoseHH, EepromAddrLastDoseMM, EepromAddrLastDoseDay, EepromAddrLastDoseMonth, EepromAddrLastDoseYear;
 	LoggerClass logger;
 	//pump actual state
 	unsigned int PumpState;

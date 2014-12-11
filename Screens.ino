@@ -798,12 +798,15 @@ void chooseAction() {
 	menus = menus + String(pumpC.getState());
  	drawLog(menus);
 	if ((millis() - lastTouchMillis) > 60000L) {
-		lcdOff();
+		//lcdOff();
+		if(currentMenu != MAIN_SCREEN) {
+			choosenMenu = MAIN_SCREEN;
+		}
 	}
 	
 	if (touch.dataAvailable())
 	{
-		lcdOn();
+		//lcdOn();
 		touch.read();
 		x=touch.getX();
 		y=touch.getY();
